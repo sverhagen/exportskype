@@ -11,3 +11,15 @@ Having installed and set up Maven you would do as follows:
 In case of BUILD SUCCESS, you should find an executable JAR file in target\exportskype-0.0.1-SNAPSHOT.jar that can be ran as follows:
 
 	...\exportskype> java -jar target\exportskype-0.0.1-SNAPSHOT.jar
+
+You can use Maven release to release the project. It will nicely label a version number and upload package archives to Google Code:
+
+	...\exportskype> mvn release:prepare release:perform
+
+For the latter to work, you need Google Code in your settings.xml of Maven:
+
+	<server>
+		<id>googlecode</id>
+		<username>...</username>
+		<password>...</password>
+	</server>
