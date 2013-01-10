@@ -18,9 +18,9 @@
         </contributor>
     </contributors>
     <scm>
-        <connection>scm:git:https://github.com/sverhagen/Export-Skype.git</connection>
-        <developerConnection>scm:git:https://github.com/sverhagen/Export-Skype.git</developerConnection>
-        <url>scm:git:https://github.com/sverhagen/Export-Skype.git</url>
+        <connection>scm:git:https://code.google.com/p/exportskype/</connection>
+        <developerConnection>scm:git:https://code.google.com/p/exportskype/</developerConnection>
+        <url>scm:git:https://code.google.com/p/exportskype/</url>
     </scm>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -133,7 +133,7 @@
                 </executions>
                 <configuration>
                     <transformers>
-                        <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer" />
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer"></transformer>
                         <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheNoticeResourceTransformer">
                             <addHeader>true</addHeader>
                         </transformer>
@@ -148,7 +148,7 @@
                 <artifactId>maven-release-plugin</artifactId>
                 <configuration>
                     <goals>install</goals>
-                    <releaseProfiles>github-upload</releaseProfiles>
+                    <releaseProfiles>google-upload</releaseProfiles>
                 </configuration>
             </plugin>
             <plugin>
@@ -173,13 +173,13 @@
     </build>
     <profiles>
         <profile>
-            <id>github-upload</id>
+            <id>google-upload</id>
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>com.github.github</groupId>
-                        <artifactId>downloads-maven-plugin</artifactId>
-                        <version>0.6</version>
+                        <groupId>com.googlecode.maven-gcu-plugin</groupId>
+                        <artifactId>maven-gcu-plugin</artifactId>
+                        <version>1.1</version>
                         <executions>
                             <execution>
                                 <phase>install</phase>
@@ -187,12 +187,16 @@
                                     <goal>upload</goal>
                                 </goals>
                                 <configuration>
-                                    <description>${project.version} release of ${project.name}</description>
-                                    <dryRun>false</dryRun>
-                                    <override>true</override>
-                                    <repositoryName>Export-Skype</repositoryName>
-                                    <repositoryOwner>sverhagen</repositoryOwner>
-                                    <server>github</server>
+                                    <uploads>
+                                        <upload>
+                                            <file>${project.build.directory}/exportskype-${project.version}.jar</file>
+                                            <labels>
+                                                <label>Featured</label>
+                                                <label>JAR</label>
+                                            </labels>
+                                            <summary>${project.version} release of ${project.name}</summary>
+                                        </upload>
+                                    </uploads>
                                 </configuration>
                             </execution>
                         </executions>
