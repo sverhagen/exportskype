@@ -18,11 +18,16 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +47,16 @@ public class TrillianOutputHandler implements OutputHandler
 
     private static final File PARENT_FOLDER = new File("./output/SKYPE");
 
+    private Set<String> fileNames = new HashSet<String>();
+
+    /**
+     * Constructor.
+     */
+    public TrillianOutputHandler()
+    {
+        log.info("Output folder: {}", PARENT_FOLDER.getAbsolutePath());
+    }
+
     /**
      * Get XML entities grouped by categories, where the categories are the chat names. Given are
      * group chats, and we handle those as separate logs, hence referencing by chat names
@@ -55,16 +70,63 @@ public class TrillianOutputHandler implements OutputHandler
         Map<String, List<XML>> categorizedXmlEntries = new HashMap<String, List<XML>>();
         for (Chat chat : groupChats)
         {
-            String name = chat.getName();
-            name = getValidFileName(name);
-            getCategorizedXmlEntitiesForSingleChat(categorizedXmlEntries, name, chat, true);
+            // Don't handle empty chats: it's messing up uniqueness
+            if (!chat.isEmpty())
+            {
+                String fileName = createUniqueValidFileName(chat);
+                getCategorizedXmlEntitiesForSingleChat(categorizedXmlEntries, fileName, chat, true);
+            }
         }
         return categorizedXmlEntries;
     }
 
-    static String getValidFileName(String name)
+    private String createUniqueValidFileName(Chat chat)
     {
-        return name.replaceAll("/\\$(.*;)*", "\\$");
+        String fileName = createValidFileName(chat);
+        for (int i = 0; true; i++)
+        {
+            String fileNameWithIndex = fileName + (i == 0 ? "" : (" (" + i + ")"));
+            if (!fileNames.contains(fileNameWithIndex))
+            {
+                fileNames.add(fileNameWithIndex);
+                return fileNameWithIndex;
+            }
+        }
+    }
+
+    /**
+     * Create a valid file name for a given (group) chat.
+     * 
+     * @param chat
+     *        (group) chat to create file name for
+     * @return valid file name
+     */
+    static String createValidFileName(Chat chat)
+    {
+        List<String> partners = chat.getPartners();
+        StringBuffer fileName = new StringBuffer();
+        fileName.append("Group Conversation ");
+        if (partners.size() > 4)
+        {
+            fileName.append(partners.get(0));
+            fileName.append(", ");
+            fileName.append(partners.get(1));
+            fileName.append(", ");
+            fileName.append(partners.get(2));
+            fileName.append(" and ");
+            fileName.append(partners.size() - 3);
+            fileName.append(" others");
+
+        }
+        else
+        {
+            fileName.append(StringUtils.join(partners, ", "));
+        }
+        SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM d yyyy");
+        fileName.append("; ");
+        Date date = new Date(chat.getFinish() * 1000);
+        fileName.append(formatter.format(date));
+        return fileName.toString();
     }
 
     /**
@@ -104,7 +166,7 @@ public class TrillianOutputHandler implements OutputHandler
             Map<String, List<XML>> categorizedXmlEntities, String category, Chat chat, boolean group)
     {
         String to = group ? chat.getTo() : category;
-        if (chat.getMessages().isEmpty())
+        if (chat.isEmpty())
         {
             return;
         }

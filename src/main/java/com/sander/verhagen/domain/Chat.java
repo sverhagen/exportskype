@@ -148,6 +148,11 @@ public class Chat
     {
         return !homeUser.equals(author);
     }
+    
+    public boolean isEmpty()
+    {
+        return messages.isEmpty();
+    }
 
     /**
      * Get the user for which we are exporting Skype logs.
