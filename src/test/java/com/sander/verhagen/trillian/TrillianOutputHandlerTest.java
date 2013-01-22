@@ -16,7 +16,9 @@ package com.sander.verhagen.trillian;
 
 import static org.junit.Assert.*;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static org.easymock.EasyMock.*;
@@ -43,9 +45,14 @@ public class TrillianOutputHandlerTest
         value.add("sander.verhagen");
 
         expect(chat.getPartners()).andReturn(value);
+        expect(chat.getFinish()).andReturn(0L /* Wed Dec 31 1969 */);
+
+        SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM d yyyy");
+        String date = formatter.format(new Date(0L));
+
         replay(chat);
         String result = TrillianOutputHandler.createValidFileName(chat);
-        assertEquals("Group Conversation sander.verhagen", result);
+        assertEquals("Group Conversation sander.verhagen; " + date, result);
         verify(chat);
     }
 }
