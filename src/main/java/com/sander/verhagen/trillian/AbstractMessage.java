@@ -83,7 +83,7 @@ public abstract class AbstractMessage implements XML
         // {
         // result.append(EscapeHelper.escape("[sent by " + fromDisplay + "] "));
         // }
-        result.append(EscapeHelper.escape(message.getBody()) + "\" ");
+        result.append(BodyFormatterHelper.format(message.getBody()) + "\" ");
         result.append("/>");
         return result.toString();
     }
