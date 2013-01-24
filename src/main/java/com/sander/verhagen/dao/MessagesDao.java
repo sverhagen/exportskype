@@ -20,18 +20,18 @@ import java.util.List;
 import com.sander.verhagen.domain.Message;
 
 /**
- * Definition of DAO for access to messages in the Skype database (&quot;Messages&quot; table).
+ * Definition of DAO for access to messages in the Skype database
+ * (&quot;Messages&quot; table).
  * 
  * @author Sander Verhagen
  */
-public interface MessagesDao
-{
-    /**
-     * Get all messages from the Skype database.
-     * 
-     * @return all messages
-     * @throws SQLException
-     *         problem with database access
-     */
-    List<Message> getMessages() throws SQLException;
+public interface MessagesDao {
+	/**
+	 * Get all messages from the Skype database.
+	 * 
+	 * @return all messages
+	 * @throws SQLException
+	 *             problem with database access
+	 */
+	List<Message> getMessages() throws SQLException;
 }

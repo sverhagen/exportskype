@@ -18,51 +18,45 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 /**
- * Helper to escape in the style of Trillian XML log format, which seems a little awkward.
+ * Helper to escape in the style of Trillian XML log format, which seems a
+ * little awkward.
  * 
  * @author Sander Verhagen
  */
-final public class EscapeHelper
-{
-    private static String encoding = "utf-8";
+final public class EscapeHelper {
+	private static String encoding = "utf-8";
 
-    /**
-     * Hidden constructor.
-     */
-    private EscapeHelper()
-    {
-        ;
-    }
+	/**
+	 * Hidden constructor.
+	 */
+	private EscapeHelper() {
+		;
+	}
 
-    /**
-     * Escape the given string for use in Trillian XML log format.
-     * 
-     * @param original
-     *        original string
-     * @return escaped string
-     */
-    public static String escape(String original)
-    {
-        String escaped = new String(original);
-        try
-        {
-            escaped = URLEncoder.encode(escaped, encoding);
-        }
-        catch (UnsupportedEncodingException exception)
-        {
-            throw new RuntimeException(exception);
-        }
-        return escaped.replace("+", "%20");
-    }
+	/**
+	 * Escape the given string for use in Trillian XML log format.
+	 * 
+	 * @param original
+	 *            original string
+	 * @return escaped string
+	 */
+	public static String escape(String original) {
+		String escaped = new String(original);
+		try {
+			escaped = URLEncoder.encode(escaped, encoding);
+		} catch (UnsupportedEncodingException exception) {
+			throw new RuntimeException(exception);
+		}
+		return escaped.replace("+", "%20");
+	}
 
-    /**
-     * Sets the desired encoding. For unit testing only
-     * 
-     * @param encoding
-     *        desired encoding
-     */
-    static void setEncoding(String encoding)
-    {
-        EscapeHelper.encoding = encoding;
-    }
+	/**
+	 * Sets the desired encoding. For unit testing only
+	 * 
+	 * @param encoding
+	 *            desired encoding
+	 */
+	static void setEncoding(String encoding) {
+		EscapeHelper.encoding = encoding;
+	}
 }

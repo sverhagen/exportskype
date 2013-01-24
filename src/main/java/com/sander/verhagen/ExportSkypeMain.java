@@ -19,16 +19,14 @@ package com.sander.verhagen;
  * 
  * @author Sander Verhagen
  */
-public class ExportSkypeMain
-{
-    /**
-     * Main executable for exporting Skype chat history.
-     * 
-     * @param args
-     *        arguments; none required
-     */
-    public static void main(String[] args)
-    {
-        new ExportSkype().execute();
-    }
+public class ExportSkypeMain {
+	/**
+	 * Main executable for exporting Skype chat history.
+	 * 
+	 * @param args
+	 *            arguments; none required
+	 */
+	public static void main(String[] args) {
+		new ExportSkype().execute();
+	}
 }

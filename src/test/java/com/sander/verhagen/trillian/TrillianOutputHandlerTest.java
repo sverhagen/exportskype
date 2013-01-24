@@ -31,28 +31,26 @@ import com.sander.verhagen.domain.Chat;
  * 
  * @author Sander Verhagen
  */
-public class TrillianOutputHandlerTest
-{
-    /**
-     * Test for <code>TrillianOutputHandler.createValidFileName</code>.
-     */
-    @Test
-    public void testGetValidFileName()
-    {
-        Chat chat = createMock(Chat.class);
+public class TrillianOutputHandlerTest {
+	/**
+	 * Test for <code>TrillianOutputHandler.createValidFileName</code>.
+	 */
+	@Test
+	public void testGetValidFileName() {
+		Chat chat = createMock(Chat.class);
 
-        List<String> value = new ArrayList<String>();
-        value.add("sander.verhagen");
+		List<String> value = new ArrayList<String>();
+		value.add("sander.verhagen");
 
-        expect(chat.getPartners()).andReturn(value);
-        expect(chat.getFinish()).andReturn(0L /* Wed Dec 31 1969 */);
+		expect(chat.getPartners()).andReturn(value);
+		expect(chat.getFinish()).andReturn(0L /* Wed Dec 31 1969 */);
 
-        SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM d yyyy");
-        String date = formatter.format(new Date(0L));
+		SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM d yyyy");
+		String date = formatter.format(new Date(0L));
 
-        replay(chat);
-        String result = TrillianOutputHandler.createValidFileName(chat);
-        assertEquals("Group Conversation sander.verhagen; " + date, result);
-        verify(chat);
-    }
+		replay(chat);
+		String result = TrillianOutputHandler.createValidFileName(chat);
+		assertEquals("Group Conversation sander.verhagen; " + date, result);
+		verify(chat);
+	}
 }

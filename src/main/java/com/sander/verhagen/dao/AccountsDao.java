@@ -18,18 +18,18 @@ import java.sql.SQLException;
 import java.util.List;
 
 /**
- * Definition of DAO for access to accounts in the Skype database (&quot;Accounts&quot; table).
+ * Definition of DAO for access to accounts in the Skype database
+ * (&quot;Accounts&quot; table).
  * 
  * @author Sander Verhagen
  */
-public interface AccountsDao
-{
-    /**
-     * Get all Skype names from the Skype database.
-     * 
-     * @return all Skype names
-     * @throws SQLException
-     *         problem with database access
-     */
-    List<String> getSkypeNames() throws SQLException;
+public interface AccountsDao {
+	/**
+	 * Get all Skype names from the Skype database.
+	 * 
+	 * @return all Skype names
+	 * @throws SQLException
+	 *             problem with database access
+	 */
+	List<String> getSkypeNames() throws SQLException;
 }

@@ -22,71 +22,70 @@ import com.sander.verhagen.domain.Message;
  * 
  * @author Sander Verhagen
  */
-public abstract class AbstractMessage implements XML
-{
+public abstract class AbstractMessage implements XML {
 
-    private Chat chat;
+	private Chat chat;
 
-    private Message message;
+	private Message message;
 
-    private String to;
+	private String to;
 
-    /**
-     * Constructor.
-     * 
-     * @param chat
-     *        total chat ({@link Chat})
-     * @param message
-     *        single message in chat ({@link Message})
-     * @param to
-     *        user name that is to be treated as communication partner
-     */
-    public AbstractMessage(Chat chat, Message message, String to)
-    {
-        this.chat = chat;
-        this.message = message;
-        this.to = to;
-    }
+	/**
+	 * Constructor.
+	 * 
+	 * @param chat
+	 *            total chat ({@link Chat})
+	 * @param message
+	 *            single message in chat ({@link Message})
+	 * @param to
+	 *            user name that is to be treated as communication partner
+	 */
+	public AbstractMessage(Chat chat, Message message, String to) {
+		this.chat = chat;
+		this.message = message;
+		this.to = to;
+	}
 
-    /**
-     * Format (private) message entity XML. <br/>
-     * <br/>
-     * Looks like: <code>&lt;message type=&quot;outgoing_privateMessage&quot;
-     * time=&quot;1348851843&quot; ms=&quot;0&quot; medium=&quot;SKYPE&quot;
-     * to=&quot;sander%2Everhagen&quot; from=&quot;some%2Euser&quot;
-     * from_display=&quot;Sander%20Verhagen&quot; text=&quot;Test!&quot;/&gt;</code>
-     * 
-     * @return entity XML
-     */
-    public String toXML()
-    {
-        String author = message.getAuthor();
-        boolean incoming = chat.isIncoming(author);
-        String to = incoming ? chat.getHomeUser() : this.to;
-        String from = incoming ? author : chat.getHomeUser();
-        String fromDisplay = message.getAuthorDisplay();
-        String direction = incoming ? "incoming" : "outgoing";
-        String type = getMessageType();
+	/**
+	 * Format (private) message entity XML. <br/>
+	 * <br/>
+	 * Looks like: <code>&lt;message type=&quot;outgoing_privateMessage&quot;
+	 * time=&quot;1348851843&quot; ms=&quot;0&quot; medium=&quot;SKYPE&quot;
+	 * to=&quot;sander%2Everhagen&quot; from=&quot;some%2Euser&quot;
+	 * from_display=&quot;Sander%20Verhagen&quot; text=&quot;Test!&quot;/&gt;</code>
+	 * 
+	 * @return entity XML
+	 */
+	public String toXML() {
+		String author = message.getAuthor();
+		boolean incoming = chat.isIncoming(author);
+		String to = incoming ? chat.getHomeUser() : this.to;
+		String from = incoming ? author : chat.getHomeUser();
+		String fromDisplay = message.getAuthorDisplay();
+		String direction = incoming ? "incoming" : "outgoing";
+		String type = getMessageType();
 
-        StringBuilder result = new StringBuilder();
-        result.append("<message ");
-        result.append("type=\"" + direction + "_" + type + "\" ");
-        result.append("time=\"" + message.getTime() + "\" ");
-        result.append("medium=\"SKYPE\" ");
-        result.append("to=\"" + EscapeHelper.escape(to) + "\" ");
-        result.append("from=\"" + EscapeHelper.escape(from) + "\" ");
-        result.append("from_display=\"" + EscapeHelper.escape(fromDisplay) + "\" ");
-        result.append("text=\"");
-        // TODO: experiment gone wrong; when copying group chats into individual chat logs, Trillian
-        // may not well observe the author, hence we added our own tag
-        // if (incoming && !this.to.equals(author))
-        // {
-        // result.append(EscapeHelper.escape("[sent by " + fromDisplay + "] "));
-        // }
-        result.append(BodyFormatterHelper.format(message.getBody()) + "\" ");
-        result.append("/>");
-        return result.toString();
-    }
+		StringBuilder result = new StringBuilder();
+		result.append("<message ");
+		result.append("type=\"" + direction + "_" + type + "\" ");
+		result.append("time=\"" + message.getTime() + "\" ");
+		result.append("medium=\"SKYPE\" ");
+		result.append("to=\"" + EscapeHelper.escape(to) + "\" ");
+		result.append("from=\"" + EscapeHelper.escape(from) + "\" ");
+		result.append("from_display=\"" + EscapeHelper.escape(fromDisplay)
+				+ "\" ");
+		result.append("text=\"");
+		// TODO: experiment gone wrong; when copying group chats into individual
+		// chat logs, Trillian
+		// may not well observe the author, hence we added our own tag
+		// if (incoming && !this.to.equals(author))
+		// {
+		// result.append(EscapeHelper.escape("[sent by " + fromDisplay + "] "));
+		// }
+		result.append(BodyFormatterHelper.format(message.getBody()) + "\" ");
+		result.append("/>");
+		return result.toString();
+	}
 
-    abstract protected String getMessageType();
+	abstract protected String getMessageType();
 }

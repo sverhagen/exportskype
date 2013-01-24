@@ -35,66 +35,59 @@ import org.junit.Test;
  * 
  * @author Sander Verhagen
  */
-public class AccountsSqliteDaoImplTest
-{
-    private String[] testAccounts = {"johnny", "susan"};
+public class AccountsSqliteDaoImplTest {
+	private String[] testAccounts = { "johnny", "susan" };
 
-    private AccountsDao subject;
+	private AccountsDao subject;
 
-    private Connection connection;
+	private Connection connection;
 
-    /**
-     * Prepare the connection and the subject for the test.
-     */
-    @Before
-    public void setUp()
-    {
-        connection = createMock(Connection.class);
-        subject = new AccountsSqliteDaoImpl(connection);
-    }
+	/**
+	 * Prepare the connection and the subject for the test.
+	 */
+	@Before
+	public void setUp() {
+		connection = createMock(Connection.class);
+		subject = new AccountsSqliteDaoImpl(connection);
+	}
 
-    /**
-     * Test for {@link AccountsSqliteDaoImpl#getSkypeNames()}.
-     * 
-     * @throws SQLException
-     *         unexpected problem occurred during the test
-     */
-    @Test
-    public void testGetSkypeNames() throws SQLException
-    {
-        ResultSet resultSet = createResultSetMock();
+	/**
+	 * Test for {@link AccountsSqliteDaoImpl#getSkypeNames()}.
+	 * 
+	 * @throws SQLException
+	 *             unexpected problem occurred during the test
+	 */
+	@Test
+	public void testGetSkypeNames() throws SQLException {
+		ResultSet resultSet = createResultSetMock();
 
-        Statement statement = createMock(Statement.class);
-        expect(connection.createStatement()).andReturn(statement);
+		Statement statement = createMock(Statement.class);
+		expect(connection.createStatement()).andReturn(statement);
 
-        String sql = "SELECT skypename FROM Accounts";
-        expect(statement.executeQuery(sql)).andReturn(resultSet);
+		String sql = "SELECT skypename FROM Accounts";
+		expect(statement.executeQuery(sql)).andReturn(resultSet);
 
-        replay(connection, resultSet, statement);
-        List<String> skypeNames = subject.getSkypeNames();
-        verify(connection, resultSet, statement);
+		replay(connection, resultSet, statement);
+		List<String> skypeNames = subject.getSkypeNames();
+		verify(connection, resultSet, statement);
 
-        verifyResultSet(skypeNames);
-    }
+		verifyResultSet(skypeNames);
+	}
 
-    private void verifyResultSet(List<String> skypeNames)
-    {
-        assertEquals(testAccounts.length, skypeNames.size());
-        for (String testAccount : testAccounts)
-        {
-            assertTrue(skypeNames.contains(testAccount));
-        }
-    }
+	private void verifyResultSet(List<String> skypeNames) {
+		assertEquals(testAccounts.length, skypeNames.size());
+		for (String testAccount : testAccounts) {
+			assertTrue(skypeNames.contains(testAccount));
+		}
+	}
 
-    private ResultSet createResultSetMock() throws SQLException
-    {
-        ResultSet resultSet = createMock(ResultSet.class);
-        for (String testAccount : testAccounts)
-        {
-            expect(resultSet.next()).andReturn(true);
-            expect(resultSet.getString("skypename")).andReturn(testAccount);
-        }
-        expect(resultSet.next()).andReturn(false);
-        return resultSet;
-    }
+	private ResultSet createResultSetMock() throws SQLException {
+		ResultSet resultSet = createMock(ResultSet.class);
+		for (String testAccount : testAccounts) {
+			expect(resultSet.next()).andReturn(true);
+			expect(resultSet.getString("skypename")).andReturn(testAccount);
+		}
+		expect(resultSet.next()).andReturn(false);
+		return resultSet;
+	}
 }

@@ -15,20 +15,19 @@
 package com.sander.verhagen.trillian;
 
 /**
- * Interface for helpers that are to format the body of the message before being written to a
- * Trillian log file.
+ * Interface for helpers that are to format the body of the message before being
+ * written to a Trillian log file.
  * 
  * @author Sander Verhagen
  * 
  */
-public interface BodyFormatter
-{
-    /**
-     * Format the given body.
-     * 
-     * @param originalBody
-     *        body that needs to be formatted
-     * @return formatted body
-     */
-    String format(String originalBody);
+public interface BodyFormatter {
+	/**
+	 * Format the given body.
+	 * 
+	 * @param originalBody
+	 *            body that needs to be formatted
+	 * @return formatted body
+	 */
+	String format(String originalBody);
 }

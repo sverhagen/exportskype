@@ -32,53 +32,48 @@ import org.apache.commons.lang3.StringUtils;
  * @author Sander Verhagen
  */
 @SuppressWarnings("serial")
-class LineWrapCellRenderer extends JTextArea implements TableCellRenderer
-{
-    public LineWrapCellRenderer()
-    {
-        setLineWrap(true);
-        setOpaque(true);
-        setWrapStyleWord(true);
-    }
+class LineWrapCellRenderer extends JTextArea implements TableCellRenderer {
+	public LineWrapCellRenderer() {
+		setLineWrap(true);
+		setOpaque(true);
+		setWrapStyleWord(true);
+	}
 
-    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-            boolean hasFocus, int row, int column)
-    {
-        String text = value.toString();
-        setForeground(isSelected ? table.getSelectionForeground() : table.getForeground());
-        setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());
-        int columnWidth = table.getColumnModel().getColumn(column).getWidth();
-        setSize(columnWidth, 0 /* don't know yet */);
-        setText(text);
+	public Component getTableCellRendererComponent(JTable table, Object value,
+			boolean isSelected, boolean hasFocus, int row, int column) {
+		String text = value.toString();
+		setForeground(isSelected ? table.getSelectionForeground() : table
+				.getForeground());
+		setBackground(isSelected ? table.getSelectionBackground() : table
+				.getBackground());
+		int columnWidth = table.getColumnModel().getColumn(column).getWidth();
+		setSize(columnWidth, 0 /* don't know yet */);
+		setText(text);
 
-        int fontHeight = this.getFontMetrics(this.getFont()).getHeight();
-        if (StringUtils.isEmpty(text))
-        {
-            table.setRowHeight(row, fontHeight);
-        }
-        else
-        {
-            table.setRowHeight(row, fontHeight * getLineCount(this));
-        }
-        return this;
-    }
+		int fontHeight = this.getFontMetrics(this.getFont()).getHeight();
+		if (StringUtils.isEmpty(text)) {
+			table.setRowHeight(row, fontHeight);
+		} else {
+			table.setRowHeight(row, fontHeight * getLineCount(this));
+		}
+		return this;
+	}
 
-    private int getLineCount(JTextArea textArea)
-    {
-        AttributedString string = new AttributedString(textArea.getText());
-        FontRenderContext fontRenderContext =
-                textArea.getFontMetrics(textArea.getFont()).getFontRenderContext();
-        AttributedCharacterIterator characterIterator = string.getIterator();
-        LineBreakMeasurer lineBreakMeasurer =
-                new LineBreakMeasurer(characterIterator, fontRenderContext);
-        lineBreakMeasurer.setPosition(characterIterator.getBeginIndex());
+	private int getLineCount(JTextArea textArea) {
+		AttributedString string = new AttributedString(textArea.getText());
+		FontRenderContext fontRenderContext = textArea.getFontMetrics(
+				textArea.getFont()).getFontRenderContext();
+		AttributedCharacterIterator characterIterator = string.getIterator();
+		LineBreakMeasurer lineBreakMeasurer = new LineBreakMeasurer(
+				characterIterator, fontRenderContext);
+		lineBreakMeasurer.setPosition(characterIterator.getBeginIndex());
 
-        int lineCount = 0;
-        while (lineBreakMeasurer.getPosition() < characterIterator.getEndIndex())
-        {
-            lineBreakMeasurer.nextLayout(textArea.getSize().width);
-            lineCount++;
-        }
-        return lineCount;
-    }
+		int lineCount = 0;
+		while (lineBreakMeasurer.getPosition() < characterIterator
+				.getEndIndex()) {
+			lineBreakMeasurer.nextLayout(textArea.getSize().width);
+			lineCount++;
+		}
+		return lineCount;
+	}
 }

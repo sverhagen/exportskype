@@ -17,55 +17,51 @@ package com.sander.verhagen.trillian;
 import java.util.regex.Pattern;
 
 /**
- * Helper to escape the body of the message to remove XML tags that Skype uses to show emoticons (
- * <code>ss</code>) and quotes (<code>quote</code>, <code>legacycode</code>).
+ * Helper to escape the body of the message to remove XML tags that Skype uses
+ * to show emoticons ( <code>ss</code>) and quotes (<code>quote</code>,
+ * <code>legacycode</code>).
  * 
  * @author Sander Verhagen
  */
-public class TagBodyFormatter implements BodyFormatter
-{
-    class TagReplacement
-    {
-        private Pattern pattern;
+public class TagBodyFormatter implements BodyFormatter {
+	class TagReplacement {
+		private Pattern pattern;
 
-        private String replacement;
+		private String replacement;
 
-        public TagReplacement(String find, String replacement)
-        {
-            this(find, replacement, 0);
-        }
+		public TagReplacement(String find, String replacement) {
+			this(find, replacement, 0);
+		}
 
-        public TagReplacement(String find, String replacement, int flags)
-        {
-            this.pattern = Pattern.compile(find, flags);
-            this.replacement = replacement;
-        }
+		public TagReplacement(String find, String replacement, int flags) {
+			this.pattern = Pattern.compile(find, flags);
+			this.replacement = replacement;
+		}
 
-        public String replace(String original)
-        {
-            return pattern.matcher(original).replaceAll(replacement);
-        }
-    }
+		public String replace(String original) {
+			return pattern.matcher(original).replaceAll(replacement);
+		}
+	}
 
-    private TagReplacement smiley = new TagReplacement("<ss type=\".*?\">(.*?)</ss>", "$1");
+	private TagReplacement smiley = new TagReplacement(
+			"<ss type=\".*?\">(.*?)</ss>", "$1");
 
-    private TagReplacement legacyQuote = new TagReplacement("<legacyquote>(.*?)</legacyquote>",
-            "$1", Pattern.DOTALL);
+	private TagReplacement legacyQuote = new TagReplacement(
+			"<legacyquote>(.*?)</legacyquote>", "$1", Pattern.DOTALL);
 
-    private TagReplacement quoteOpen = new TagReplacement("<quote .*?>", "");
+	private TagReplacement quoteOpen = new TagReplacement("<quote .*?>", "");
 
-    private TagReplacement quoteClose = new TagReplacement("</quote>", "\r\n");
+	private TagReplacement quoteClose = new TagReplacement("</quote>", "\r\n");
 
-    private TagReplacement[] replacements = {smiley, legacyQuote, quoteOpen, quoteClose};
+	private TagReplacement[] replacements = { smiley, legacyQuote, quoteOpen,
+			quoteClose };
 
-    public String format(String originalBody)
-    {
-        String body = new String(originalBody);
-        for (TagReplacement replacement : replacements)
-        {
-            body = replacement.replace(body);
-        }
-        return body;
-    }
+	public String format(String originalBody) {
+		String body = new String(originalBody);
+		for (TagReplacement replacement : replacements) {
+			body = replacement.replace(body);
+		}
+		return body;
+	}
 
 }

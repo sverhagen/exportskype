@@ -24,93 +24,86 @@ import org.apache.commons.lang3.StringUtils;
  * 
  * @author Sander Verhagen
  */
-public class Message
-{
+public class Message {
 
-    private String body;
+	private String body;
 
-    private String author;
+	private String author;
 
-    private String authorDisplay;
+	private String authorDisplay;
 
-    private long time;
+	private long time;
 
-    private String chatName;
+	private String chatName;
 
-    /**
-     * Constructor.
-     * 
-     * @param resultSet
-     *        record as pulled from the Skype database
-     * @throws SQLException
-     *         problem with database access
-     */
-    public Message(ResultSet resultSet) throws SQLException
-    {
-        this.chatName = resultSet.getString("chatname");
-        this.body = resultSet.getString("body_xml");
-        this.author = resultSet.getString("author");
-        this.authorDisplay = resultSet.getString("from_dispname");
-        this.time = resultSet.getLong("timestamp");
-    }
+	/**
+	 * Constructor.
+	 * 
+	 * @param resultSet
+	 *            record as pulled from the Skype database
+	 * @throws SQLException
+	 *             problem with database access
+	 */
+	public Message(ResultSet resultSet) throws SQLException {
+		this.chatName = resultSet.getString("chatname");
+		this.body = resultSet.getString("body_xml");
+		this.author = resultSet.getString("author");
+		this.authorDisplay = resultSet.getString("from_dispname");
+		this.time = resultSet.getLong("timestamp");
+	}
 
-    /**
-     * Get the body of the message.
-     * 
-     * @return message body
-     */
-    public String getBody()
-    {
-        return body;
-    }
+	/**
+	 * Get the body of the message.
+	 * 
+	 * @return message body
+	 */
+	public String getBody() {
+		return body;
+	}
 
-    /**
-     * Get the author of the message.
-     * 
-     * @return message author
-     */
-    public String getAuthor()
-    {
-        return author;
-    }
+	/**
+	 * Get the author of the message.
+	 * 
+	 * @return message author
+	 */
+	public String getAuthor() {
+		return author;
+	}
 
-    /**
-     * Get the time of the message, Unix epoch.
-     * 
-     * @return message time
-     */
-    public long getTime()
-    {
-        return time;
-    }
+	/**
+	 * Get the time of the message, Unix epoch.
+	 * 
+	 * @return message time
+	 */
+	public long getTime() {
+		return time;
+	}
 
-    /**
-     * Get the display name of the author of the message.
-     * 
-     * @return message author display name
-     */
-    public String getAuthorDisplay()
-    {
-        return authorDisplay;
-    }
+	/**
+	 * Get the display name of the author of the message.
+	 * 
+	 * @return message author display name
+	 */
+	public String getAuthorDisplay() {
+		return authorDisplay;
+	}
 
-    /**
-     * Get the chat name that this message belongs to.
-     * 
-     * @return chat name
-     */
-    public String getChatName()
-    {
-        return chatName;
-    }
+	/**
+	 * Get the chat name that this message belongs to.
+	 * 
+	 * @return chat name
+	 */
+	public String getChatName() {
+		return chatName;
+	}
 
-    /**
-     * Determine if the message is empty.
-     * 
-     * @return <code>true</code> if message empty; <code>false</code> if message contains something
-     */
-    public boolean isEmpty()
-    {
-        return StringUtils.isBlank(body);
-    }
+	/**
+	 * Determine if the message is empty.
+	 * 
+	 * @return <code>true</code> if message empty; <code>false</code> if message
+	 *         contains something
+	 */
+	public boolean isEmpty() {
+		return StringUtils.isBlank(body);
+	}
 }

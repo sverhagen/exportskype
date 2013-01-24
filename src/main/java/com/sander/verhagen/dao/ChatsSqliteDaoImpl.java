@@ -27,46 +27,41 @@ import org.slf4j.LoggerFactory;
 import com.sander.verhagen.domain.Chat;
 
 /**
- * Implementation of DAO for access to chats in the Skype database (&quot;Chats&quot; table).
+ * Implementation of DAO for access to chats in the Skype database
+ * (&quot;Chats&quot; table).
  * 
  * @author Sander Verhagen
  */
-public class ChatsSqliteDaoImpl implements ChatsDao
-{
-    private static Logger log = LoggerFactory.getLogger(ChatsSqliteDaoImpl.class);
+public class ChatsSqliteDaoImpl implements ChatsDao {
+	private static Logger log = LoggerFactory
+			.getLogger(ChatsSqliteDaoImpl.class);
 
-    private Connection connection;
+	private Connection connection;
 
-    /**
-     * Constructor.
-     * 
-     * @param connection
-     *        (opened) database connection
-     */
-    public ChatsSqliteDaoImpl(Connection connection)
-    {
-        this.connection = connection;
-    }
+	/**
+	 * Constructor.
+	 * 
+	 * @param connection
+	 *            (opened) database connection
+	 */
+	public ChatsSqliteDaoImpl(Connection connection) {
+		this.connection = connection;
+	}
 
-    public List<Chat> getChats() throws SQLException
-    {
-        List<Chat> chats = new ArrayList<Chat>();
-        Statement statement = connection.createStatement();
-        String sql = "SELECT * FROM Chats ORDER BY timestamp";
-        ResultSet resultSet = statement.executeQuery(sql);
-        while (resultSet.next())
-        {
-            Chat chat = new Chat(resultSet);
-            if (chat.hasPartners())
-            {
-                chats.add(chat);
-            }
-            else
-            {
-                log.info("Has no partners: chat {}", chat.getName());
-            }
-        }
-        return chats;
-    }
+	public List<Chat> getChats() throws SQLException {
+		List<Chat> chats = new ArrayList<Chat>();
+		Statement statement = connection.createStatement();
+		String sql = "SELECT * FROM Chats ORDER BY timestamp";
+		ResultSet resultSet = statement.executeQuery(sql);
+		while (resultSet.next()) {
+			Chat chat = new Chat(resultSet);
+			if (chat.hasPartners()) {
+				chats.add(chat);
+			} else {
+				log.info("Has no partners: chat {}", chat.getName());
+			}
+		}
+		return chats;
+	}
 
 }

@@ -26,53 +26,44 @@ import org.junit.Test;
  * 
  * @author Sander Verhagen
  */
-public class EscapeHelperTest
-{
-    /**
-     * Test for {@link EscapeHelper#escape}. Important is that spaces should not be escaped as
-     * &quot;+&quot;
-     */
-    @Test
-    public void testEscapeHelper()
-    {
-        assertEquals("Test%20%21%21%21", EscapeHelper.escape("Test !!!"));
-        assertEquals("How%20are%20you%3F", EscapeHelper.escape("How are you?"));
-    }
+public class EscapeHelperTest {
+	/**
+	 * Test for {@link EscapeHelper#escape}. Important is that spaces should not
+	 * be escaped as &quot;+&quot;
+	 */
+	@Test
+	public void testEscapeHelper() {
+		assertEquals("Test%20%21%21%21", EscapeHelper.escape("Test !!!"));
+		assertEquals("How%20are%20you%3F", EscapeHelper.escape("How are you?"));
+	}
 
-    /**
-     * Test for the private constructor of {@link EscapeHelper}. This is just to not having to keep
-     * track of missing code coverage due to code that isn't supposed to be executed in the first
-     * place
-     * 
-     * @throws Exception
-     *         something wrong
-     */
-    @Test
-    public void testPrivateConstructor() throws Exception
-    {
-        Constructor constructor = EscapeHelper.class.getDeclaredConstructor();
-        constructor.setAccessible(true);
-        constructor.newInstance();
-    }
+	/**
+	 * Test for the private constructor of {@link EscapeHelper}. This is just to
+	 * not having to keep track of missing code coverage due to code that isn't
+	 * supposed to be executed in the first place
+	 * 
+	 * @throws Exception
+	 *             something wrong
+	 */
+	@Test
+	public void testPrivateConstructor() throws Exception {
+		Constructor constructor = EscapeHelper.class.getDeclaredConstructor();
+		constructor.setAccessible(true);
+		constructor.newInstance();
+	}
 
-    /**
-     * Test that an unsupported encoding throws an exception.
-     */
-    @Test
-    public void testUnsupportedEncoding()
-    {
-        try
-        {
-            EscapeHelper.setEncoding("should not exist");
-            EscapeHelper.escape("Test");
-            fail("should have given RuntimeException wrapping UnsupportedEncodingException");
-        }
-        catch (RuntimeException exception)
-        {
-        }
-        finally
-        {
-            EscapeHelper.setEncoding("utf-8");
-        }
-    }
+	/**
+	 * Test that an unsupported encoding throws an exception.
+	 */
+	@Test
+	public void testUnsupportedEncoding() {
+		try {
+			EscapeHelper.setEncoding("should not exist");
+			EscapeHelper.escape("Test");
+			fail("should have given RuntimeException wrapping UnsupportedEncodingException");
+		} catch (RuntimeException exception) {
+		} finally {
+			EscapeHelper.setEncoding("utf-8");
+		}
+	}
 }

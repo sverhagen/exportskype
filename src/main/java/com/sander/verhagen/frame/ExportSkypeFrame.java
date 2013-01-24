@@ -38,90 +38,75 @@ import com.sander.verhagen.ExportSkype;
  * @author Sander Verhagen
  */
 @SuppressWarnings("serial")
-public class ExportSkypeFrame extends JFrame
-{
-    private static Logger log = LoggerFactory.getLogger(ExportSkypeFrame.class);
+public class ExportSkypeFrame extends JFrame {
+	private static Logger log = LoggerFactory.getLogger(ExportSkypeFrame.class);
 
-    ExportSkypeFrame()
-    {
-        add(new JLoggingTable());
-        initializeStaticText();
-        initializeWindow();
-        addWindowListener(new CloseWindowAdapter());
-        setIcon();
-    }
+	ExportSkypeFrame() {
+		add(new JLoggingTable());
+		initializeStaticText();
+		initializeWindow();
+		addWindowListener(new CloseWindowAdapter());
+		setIcon();
+	}
 
-    private void initializeStaticText()
-    {
-        try
-        {
-            JHyperlinkTextPane textPane = new JHyperlinkTextPane();
-            textPane.addText("Licensed under the ");
-            textPane.addHyperlinkText("Apache License",
-                    "http://www.apache.org/licenses/LICENSE-2.0");
-            textPane.addText(", free and \"as-is\". More information on ");
-            textPane.addHyperlinkText("Google Code", "http://code.google.com/p/exportskype/");
-            textPane.setAlignment(StyleConstants.ALIGN_CENTER);
-            add(BorderLayout.SOUTH, textPane);
-        }
-        catch (URISyntaxException exception)
-        {
-            log.error("Cannot initialize static hyperlink text", exception);
-        }
-    }
+	private void initializeStaticText() {
+		try {
+			JHyperlinkTextPane textPane = new JHyperlinkTextPane();
+			textPane.addText("Licensed under the ");
+			textPane.addHyperlinkText("Apache License",
+					"http://www.apache.org/licenses/LICENSE-2.0");
+			textPane.addText(", free and \"as-is\". More information on ");
+			textPane.addHyperlinkText("Google Code",
+					"http://code.google.com/p/exportskype/");
+			textPane.setAlignment(StyleConstants.ALIGN_CENTER);
+			add(BorderLayout.SOUTH, textPane);
+		} catch (URISyntaxException exception) {
+			log.error("Cannot initialize static hyperlink text", exception);
+		}
+	}
 
-    private void initializeWindow()
-    {
-        setTitle("Export Skype");
-        setMinimumSize(new Dimension(480, 200));
-        setSize(700, 500);
-        setLocationRelativeTo(null);
-        setVisible(true);
-        requestFocus();
-    }
+	private void initializeWindow() {
+		setTitle("Export Skype");
+		setMinimumSize(new Dimension(480, 200));
+		setSize(700, 500);
+		setLocationRelativeTo(null);
+		setVisible(true);
+		requestFocus();
+	}
 
-    private void setIcon()
-    {
-        String name = "icon.png";
-        InputStream stream = getClass().getResourceAsStream(name);
-        try
-        {
-            Image image = ImageIO.read(stream);
-            setIconImage(image);
-        }
-        catch (IllegalArgumentException exception)
-        {
-            log.error("Could not find icon " + name, exception);
-        }
-        catch (IOException exception)
-        {
-            log.error("Problem reading icon " + name, exception);
-        }
-    }
+	private void setIcon() {
+		String name = "icon.png";
+		InputStream stream = getClass().getResourceAsStream(name);
+		try {
+			Image image = ImageIO.read(stream);
+			setIconImage(image);
+		} catch (IllegalArgumentException exception) {
+			log.error("Could not find icon " + name, exception);
+		} catch (IOException exception) {
+			log.error("Problem reading icon " + name, exception);
+		}
+	}
 
-    private final class CloseWindowAdapter extends WindowAdapter
-    {
-        @Override
-        public void windowClosing(WindowEvent e)
-        {
-            dispose();
-            System.exit(1);
-        }
-    }
+	private final class CloseWindowAdapter extends WindowAdapter {
+		@Override
+		public void windowClosing(WindowEvent e) {
+			dispose();
+			System.exit(1);
+		}
+	}
 
-    /**
-     * Frame executable for exporting Skype chat history.
-     * 
-     * @param args
-     *        arguments; none required
-     */
-    public static void main(String args[])
-    {
-        new ExportSkypeFrame();
+	/**
+	 * Frame executable for exporting Skype chat history.
+	 * 
+	 * @param args
+	 *            arguments; none required
+	 */
+	public static void main(String args[]) {
+		new ExportSkypeFrame();
 		try {
 			new ExportSkype().execute();
 		} catch (Exception exception) {
 			log.error("Problem executing export", exception);
 		}
-    }
+	}
 }

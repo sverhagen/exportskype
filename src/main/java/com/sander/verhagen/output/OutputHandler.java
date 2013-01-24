@@ -24,24 +24,25 @@ import com.sander.verhagen.domain.Chat;
  * 
  * @author Sander Verhagen
  */
-public interface OutputHandler
-{
+public interface OutputHandler {
 
-    /**
-     * Handle output of Skype export for individual chats. (I.e. excluding group chats)
-     * 
-     * @param mappedIndividualChats
-     *        chats mapped onto individual contacts; this means there is a map entry for each
-     *        individual contact; the entry's key is the name of the individual contact; the entry's
-     *        value is a list of all chats of the individual contact
-     */
-    void outputIndividual(Map<String, List<Chat>> mappedIndividualChats);
+	/**
+	 * Handle output of Skype export for individual chats. (I.e. excluding group
+	 * chats)
+	 * 
+	 * @param mappedIndividualChats
+	 *            chats mapped onto individual contacts; this means there is a
+	 *            map entry for each individual contact; the entry's key is the
+	 *            name of the individual contact; the entry's value is a list of
+	 *            all chats of the individual contact
+	 */
+	void outputIndividual(Map<String, List<Chat>> mappedIndividualChats);
 
-    /**
-     * Handle output of Skype export for group chats.
-     * 
-     * @param groupChats
-     *        list of all group chats
-     */
-    void outputGroups(List<Chat> groupChats);
+	/**
+	 * Handle output of Skype export for group chats.
+	 * 
+	 * @param groupChats
+	 *            list of all group chats
+	 */
+	void outputGroups(List<Chat> groupChats);
 }

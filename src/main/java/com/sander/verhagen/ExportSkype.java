@@ -44,158 +44,144 @@ import com.sander.verhagen.trillian.TrillianOutputHandler;
  * 
  * @author Sander Verhagen
  */
-public class ExportSkype
-{
-    private static Logger log = LoggerFactory.getLogger(ExportSkype.class);
+public class ExportSkype {
+	private static Logger log = LoggerFactory.getLogger(ExportSkype.class);
 
-    private AccountsDao accountsDao;
+	private AccountsDao accountsDao;
 
-    private ChatsDao chatsDao;
+	private ChatsDao chatsDao;
 
-    private MessagesDao messagesDao;
+	private MessagesDao messagesDao;
 
-    /**
-     * Predicate used to split out collections with group chats and individual chats.
-     */
-    private final class GroupChatPredicate implements Predicate
-    {
-        public boolean evaluate(Object subject)
-        {
-            return ((Chat) subject).isGroupChat();
-        }
-    }
+	/**
+	 * Predicate used to split out collections with group chats and individual
+	 * chats.
+	 */
+	private final class GroupChatPredicate implements Predicate {
+		public boolean evaluate(Object subject) {
+			return ((Chat) subject).isGroupChat();
+		}
+	}
 
-    /**
-     * Execute the actual Skype export.
-     */
-    @SuppressWarnings("unchecked")
-    public void execute()
-    {
-        DatabaseConnectionHelper connectionHelper = new DatabaseConnectionHelper();
-        Connection connection = connectionHelper.open();
-        accountsDao = new AccountsSqliteDaoImpl(connection);
-        chatsDao = new ChatsSqliteDaoImpl(connection);
-        messagesDao = new MessagesSqliteDaoImpl(connection);
-        try
-        {
-            log.info("Starting");
+	/**
+	 * Execute the actual Skype export.
+	 */
+	@SuppressWarnings("unchecked")
+	public void execute() {
+		DatabaseConnectionHelper connectionHelper = new DatabaseConnectionHelper();
+		Connection connection = connectionHelper.open();
+		accountsDao = new AccountsSqliteDaoImpl(connection);
+		chatsDao = new ChatsSqliteDaoImpl(connection);
+		messagesDao = new MessagesSqliteDaoImpl(connection);
+		try {
+			log.info("Starting");
 
-            String skypeName = getSkypeName();
-            Chat.setHomeUser(skypeName);
+			String skypeName = getSkypeName();
+			Chat.setHomeUser(skypeName);
 
-            Map<String, Chat> chats = populateChats();
-            populateMessages(chats);
-            Predicate predicate = new GroupChatPredicate();
-            List<Chat> groupChats = (List<Chat>) select(chats.values(), predicate);
-            List<Chat> individualChats = (List<Chat>) selectRejected(chats.values(), predicate);
+			Map<String, Chat> chats = populateChats();
+			populateMessages(chats);
+			Predicate predicate = new GroupChatPredicate();
+			List<Chat> groupChats = (List<Chat>) select(chats.values(),
+					predicate);
+			List<Chat> individualChats = (List<Chat>) selectRejected(
+					chats.values(), predicate);
 
-            // Enable following line to copy group chats into individual chat logs
-            // individualChats = new ArrayList<Chat>(chats.values());
+			// Enable following line to copy group chats into individual chat
+			// logs
+			// individualChats = new ArrayList<Chat>(chats.values());
 
-            Map<String, List<Chat>> mappedIndividualChats =
-                    populateMappedIndividualChats(individualChats);
+			Map<String, List<Chat>> mappedIndividualChats = populateMappedIndividualChats(individualChats);
 
-            OutputHandler outputHandler = new TrillianOutputHandler();
-            outputHandler.outputIndividual(mappedIndividualChats);
-            outputHandler.outputGroups(groupChats);
+			OutputHandler outputHandler = new TrillianOutputHandler();
+			outputHandler.outputIndividual(mappedIndividualChats);
+			outputHandler.outputGroups(groupChats);
 
-            log.info("All done");
-        }
-        catch (SQLException exception)
-        {
-            throw new RuntimeException("Problem with database access", exception);
-        }
-        finally
-        {
-            connectionHelper.close();
-        }
-    }
+			log.info("All done");
+		} catch (SQLException exception) {
+			throw new RuntimeException("Problem with database access",
+					exception);
+		} finally {
+			connectionHelper.close();
+		}
+	}
 
-    private String getSkypeName() throws SQLException
-    {
-        List<String> skypeNames = accountsDao.getSkypeNames();
-        if (skypeNames.size() == 0)
-        {
-            throw new RuntimeException("No Skype accounts found in database");
-        }
-        String skypeName = skypeNames.get(0);
-        if (skypeNames.size() > 1)
-        {
-            log.info("Found more than one Skype account; only using first one ({})", skypeName);
-        }
-        log.info("Using Skype account {}", skypeName);
-        return skypeName;
-    }
+	private String getSkypeName() throws SQLException {
+		List<String> skypeNames = accountsDao.getSkypeNames();
+		if (skypeNames.size() == 0) {
+			throw new RuntimeException("No Skype accounts found in database");
+		}
+		String skypeName = skypeNames.get(0);
+		if (skypeNames.size() > 1) {
+			log.info(
+					"Found more than one Skype account; only using first one ({})",
+					skypeName);
+		}
+		log.info("Using Skype account {}", skypeName);
+		return skypeName;
+	}
 
-    /**
-     * Convert a list of chats in a structure where chats are mapped onto contacts/partners.
-     * 
-     * @param chats
-     *        chats with messages
-     * @return chats mapped onto contacts/partners
-     */
-    private Map<String, List<Chat>> populateMappedIndividualChats(List<Chat> chats)
-    {
-        Map<String, List<Chat>> mappedIndividualChats = new HashMap<String, List<Chat>>();
-        for (Chat chat : chats)
-        {
-            List<String> partners = chat.getPartners();
-            for (String partner : partners)
-            {
-                if (!mappedIndividualChats.containsKey(partner))
-                {
-                    mappedIndividualChats.put(partner, new ArrayList<Chat>());
-                }
-                mappedIndividualChats.get(partner).add(chat);
-            }
-        }
-        return mappedIndividualChats;
-    }
+	/**
+	 * Convert a list of chats in a structure where chats are mapped onto
+	 * contacts/partners.
+	 * 
+	 * @param chats
+	 *            chats with messages
+	 * @return chats mapped onto contacts/partners
+	 */
+	private Map<String, List<Chat>> populateMappedIndividualChats(
+			List<Chat> chats) {
+		Map<String, List<Chat>> mappedIndividualChats = new HashMap<String, List<Chat>>();
+		for (Chat chat : chats) {
+			List<String> partners = chat.getPartners();
+			for (String partner : partners) {
+				if (!mappedIndividualChats.containsKey(partner)) {
+					mappedIndividualChats.put(partner, new ArrayList<Chat>());
+				}
+				mappedIndividualChats.get(partner).add(chat);
+			}
+		}
+		return mappedIndividualChats;
+	}
 
-    /**
-     * Get bare chats.
-     * 
-     * @return chats chats mapped onto chat names
-     * @throws SQLException
-     *         problem with database access
-     */
-    private Map<String, Chat> populateChats() throws SQLException
-    {
-        log.info("Processing all chats");
-        Map<String, Chat> chats = new HashMap<String, Chat>();
-        for (Chat chat : chatsDao.getChats())
-        {
-            chats.put(chat.getName(), chat);
-            if (chat.getStart() > chat.getFinish())
-            {
-                log.warn("Chat \"" + chat.getName()
-                        + "\" seems to finish before being started; start: " + chat.getStart()
-                        + " finish: " + chat.getFinish());
-            }
+	/**
+	 * Get bare chats.
+	 * 
+	 * @return chats chats mapped onto chat names
+	 * @throws SQLException
+	 *             problem with database access
+	 */
+	private Map<String, Chat> populateChats() throws SQLException {
+		log.info("Processing all chats");
+		Map<String, Chat> chats = new HashMap<String, Chat>();
+		for (Chat chat : chatsDao.getChats()) {
+			chats.put(chat.getName(), chat);
+			if (chat.getStart() > chat.getFinish()) {
+				log.warn("Chat \"" + chat.getName()
+						+ "\" seems to finish before being started; start: "
+						+ chat.getStart() + " finish: " + chat.getFinish());
+			}
 
-        }
-        return chats;
-    }
+		}
+		return chats;
+	}
 
-    /**
-     * Add messages to chats.
-     * 
-     * @param chats
-     *        bare chats mapped onto chat names
-     * @throws SQLException
-     *         problem with database access
-     */
-    private void populateMessages(Map<String, Chat> chats) throws SQLException
-    {
-        log.info("Processing all messages");
-        for (Message message : messagesDao.getMessages())
-        {
-            String chatName = message.getChatName();
-            Chat chat = chats.get(chatName);
-            if (chat != null)
-            {
-                chat.addMessage(message);
-            }
-        }
-    }
+	/**
+	 * Add messages to chats.
+	 * 
+	 * @param chats
+	 *            bare chats mapped onto chat names
+	 * @throws SQLException
+	 *             problem with database access
+	 */
+	private void populateMessages(Map<String, Chat> chats) throws SQLException {
+		log.info("Processing all messages");
+		for (Message message : messagesDao.getMessages()) {
+			String chatName = message.getChatName();
+			Chat chat = chats.get(chatName);
+			if (chat != null) {
+				chat.addMessage(message);
+			}
+		}
+	}
 }

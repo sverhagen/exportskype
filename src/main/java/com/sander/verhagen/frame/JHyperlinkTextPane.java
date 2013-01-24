@@ -42,129 +42,110 @@ import javax.swing.text.StyledDocument;
  * @author Sander Verhagen
  */
 @SuppressWarnings("serial")
-class JHyperlinkTextPane extends JTextPane
-{
-    private final static String LINK_ACTION_ATTRIBUTE = "linkAction";
+class JHyperlinkTextPane extends JTextPane {
+	private final static String LINK_ACTION_ATTRIBUTE = "linkAction";
 
-    private StyledDocument document;
+	private StyledDocument document;
 
-    private Style regular;
+	private Style regular;
 
-    private Style hyperlink;
+	private Style hyperlink;
 
-    public JHyperlinkTextPane()
-    {
-        addMouseListener(new TextClickListener());
-        addMouseMotionListener(new TextMotionListener());
-        setEditable(false);
+	public JHyperlinkTextPane() {
+		addMouseListener(new TextClickListener());
+		addMouseMotionListener(new TextMotionListener());
+		setEditable(false);
 
-        regular = StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE);
+		regular = StyleContext.getDefaultStyleContext().getStyle(
+				StyleContext.DEFAULT_STYLE);
 
-        document = getStyledDocument();
-        hyperlink = document.addStyle("hyperlink", regular);
-        StyleConstants.setForeground(hyperlink, Color.BLUE);
-        StyleConstants.setUnderline(hyperlink, true);
+		document = getStyledDocument();
+		hyperlink = document.addStyle("hyperlink", regular);
+		StyleConstants.setForeground(hyperlink, Color.BLUE);
+		StyleConstants.setUnderline(hyperlink, true);
 
-        setCaretPosition(0);
-    }
+		setCaretPosition(0);
+	}
 
-    public void addText(String text)
-    {
-        try
-        {
-            document.insertString(document.getLength(), text, regular);
-        }
-        catch (BadLocationException exception)
-        {
-            ; // should not happen as position is determined on basis of the document itself
-        }
-    }
+	public void addText(String text) {
+		try {
+			document.insertString(document.getLength(), text, regular);
+		} catch (BadLocationException exception) {
+			; // should not happen as position is determined on basis of the
+				// document itself
+		}
+	}
 
-    public void addHyperlinkText(String text, String uri) throws URISyntaxException
-    {
-        addHyperlinkText(text, new URI(uri));
-    }
+	public void addHyperlinkText(String text, String uri)
+			throws URISyntaxException {
+		addHyperlinkText(text, new URI(uri));
+	}
 
-    public void addHyperlinkText(String text, URI uri)
-    {
-        Style localHyperlink = document.addStyle(null, hyperlink);
-        localHyperlink.addAttribute(LINK_ACTION_ATTRIBUTE, new URLLinkAction(uri));
-        try
-        {
-            document.insertString(document.getLength(), text, localHyperlink);
-        }
-        catch (BadLocationException exception)
-        {
-            ; // should not happen as position is determined on basis of the document itself
-        }
-    }
+	public void addHyperlinkText(String text, URI uri) {
+		Style localHyperlink = document.addStyle(null, hyperlink);
+		localHyperlink.addAttribute(LINK_ACTION_ATTRIBUTE, new URLLinkAction(
+				uri));
+		try {
+			document.insertString(document.getLength(), text, localHyperlink);
+		} catch (BadLocationException exception) {
+			; // should not happen as position is determined on basis of the
+				// document itself
+		}
+	}
 
-    private class TextClickListener extends MouseAdapter
-    {
-        @Override
-        public void mouseClicked(MouseEvent event)
-        {
-            int viewToModel = viewToModel(event.getPoint());
-            Element element = document.getCharacterElement(viewToModel);
-            AttributeSet attributeSet = element.getAttributes();
-            URLLinkAction action = (URLLinkAction) attributeSet.getAttribute(LINK_ACTION_ATTRIBUTE);
-            if (action != null)
-            {
-                action.execute();
-            }
-        }
-    }
+	private class TextClickListener extends MouseAdapter {
+		@Override
+		public void mouseClicked(MouseEvent event) {
+			int viewToModel = viewToModel(event.getPoint());
+			Element element = document.getCharacterElement(viewToModel);
+			AttributeSet attributeSet = element.getAttributes();
+			URLLinkAction action = (URLLinkAction) attributeSet
+					.getAttribute(LINK_ACTION_ATTRIBUTE);
+			if (action != null) {
+				action.execute();
+			}
+		}
+	}
 
-    private class TextMotionListener extends MouseInputAdapter
-    {
-        @Override
-        public void mouseMoved(MouseEvent e)
-        {
-            int viewToModel = viewToModel(e.getPoint());
-            Element element = document.getCharacterElement(viewToModel);
-            AttributeSet attributeSet = element.getAttributes();
-            if (attributeSet.getAttribute(LINK_ACTION_ATTRIBUTE) == null)
-            {
-                setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-            }
-            else
-            {
-                setCursor(new Cursor(Cursor.HAND_CURSOR));
-            }
-        }
-    }
+	private class TextMotionListener extends MouseInputAdapter {
+		@Override
+		public void mouseMoved(MouseEvent e) {
+			int viewToModel = viewToModel(e.getPoint());
+			Element element = document.getCharacterElement(viewToModel);
+			AttributeSet attributeSet = element.getAttributes();
+			if (attributeSet.getAttribute(LINK_ACTION_ATTRIBUTE) == null) {
+				setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+			} else {
+				setCursor(new Cursor(Cursor.HAND_CURSOR));
+			}
+		}
+	}
 
-    private class URLLinkAction extends AbstractAction
-    {
-        private URI uri;
+	private class URLLinkAction extends AbstractAction {
+		private URI uri;
 
-        URLLinkAction(URI uri)
-        {
-            this.uri = uri;
-        }
+		URLLinkAction(URI uri) {
+			this.uri = uri;
+		}
 
-        protected void execute()
-        {
-            try
-            {
-                Desktop.getDesktop().browse(uri);
-            }
-            catch (Exception exception)
-            {
-                JOptionPane.showMessageDialog(JHyperlinkTextPane.this, "Cannot open URI: " + uri);
-            }
-        }
+		protected void execute() {
+			try {
+				Desktop.getDesktop().browse(uri);
+			} catch (Exception exception) {
+				JOptionPane.showMessageDialog(JHyperlinkTextPane.this,
+						"Cannot open URI: " + uri);
+			}
+		}
 
-        public void actionPerformed(ActionEvent e)
-        {
-            execute();
-        }
-    }
+		public void actionPerformed(ActionEvent e) {
+			execute();
+		}
+	}
 
-    public void setAlignment(int alignment)
-    {
-        SimpleAttributeSet attributeSet = new SimpleAttributeSet();
-        StyleConstants.setAlignment(attributeSet, alignment);
-        document.setParagraphAttributes(0, document.getLength(), attributeSet, false);
-    }
+	public void setAlignment(int alignment) {
+		SimpleAttributeSet attributeSet = new SimpleAttributeSet();
+		StyleConstants.setAlignment(attributeSet, alignment);
+		document.setParagraphAttributes(0, document.getLength(), attributeSet,
+				false);
+	}
 }

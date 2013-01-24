@@ -36,246 +36,234 @@ import com.sander.verhagen.domain.Message;
 import com.sander.verhagen.output.OutputHandler;
 
 /**
- * Definition of handler to do something with output of Skype export, and write it to XML files in
- * Trillian XML log format.
+ * Definition of handler to do something with output of Skype export, and write
+ * it to XML files in Trillian XML log format.
  * 
  * @author Sander Verhagen
  */
-public class TrillianOutputHandler implements OutputHandler
-{
-    private static Logger log = LoggerFactory.getLogger(TrillianOutputHandler.class);
+public class TrillianOutputHandler implements OutputHandler {
+	private static Logger log = LoggerFactory
+			.getLogger(TrillianOutputHandler.class);
 
-    private static final File PARENT_FOLDER = new File("./output/SKYPE");
+	private static final File PARENT_FOLDER = new File("./output/SKYPE");
 
-    private Set<String> fileNames = new HashSet<String>();
+	private Set<String> fileNames = new HashSet<String>();
 
-    /**
-     * Constructor.
-     */
-    public TrillianOutputHandler()
-    {
-        log.info("Output folder: {}", PARENT_FOLDER.getAbsolutePath());
-    }
+	/**
+	 * Constructor.
+	 */
+	public TrillianOutputHandler() {
+		log.info("Output folder: {}", PARENT_FOLDER.getAbsolutePath());
+	}
 
-    /**
-     * Get XML entities grouped by categories, where the categories are the chat names. Given are
-     * group chats, and we handle those as separate logs, hence referencing by chat names
-     * 
-     * @param groupChats
-     *        group chats to get XML entities for
-     * @return XML entities grouped by categories, where categories are chat names
-     */
-    private Map<String, List<XML>> getCategorizedXmlEntities(List<Chat> groupChats)
-    {
-        Map<String, List<XML>> categorizedXmlEntries = new HashMap<String, List<XML>>();
-        for (Chat chat : groupChats)
-        {
-            // Don't handle empty chats: it's messing up uniqueness
-            if (!chat.isEmpty())
-            {
-                String fileName = createUniqueValidFileName(chat);
-                getCategorizedXmlEntitiesForSingleChat(categorizedXmlEntries, fileName, chat, true);
-            }
-        }
-        return categorizedXmlEntries;
-    }
+	/**
+	 * Get XML entities grouped by categories, where the categories are the chat
+	 * names. Given are group chats, and we handle those as separate logs, hence
+	 * referencing by chat names
+	 * 
+	 * @param groupChats
+	 *            group chats to get XML entities for
+	 * @return XML entities grouped by categories, where categories are chat
+	 *         names
+	 */
+	private Map<String, List<XML>> getCategorizedXmlEntities(
+			List<Chat> groupChats) {
+		Map<String, List<XML>> categorizedXmlEntries = new HashMap<String, List<XML>>();
+		for (Chat chat : groupChats) {
+			// Don't handle empty chats: it's messing up uniqueness
+			if (!chat.isEmpty()) {
+				String fileName = createUniqueValidFileName(chat);
+				getCategorizedXmlEntitiesForSingleChat(categorizedXmlEntries,
+						fileName, chat, true);
+			}
+		}
+		return categorizedXmlEntries;
+	}
 
-    private String createUniqueValidFileName(Chat chat)
-    {
-        String fileName = createValidFileName(chat);
-        for (int i = 0; true; i++)
-        {
-            String fileNameWithIndex = fileName + (i == 0 ? "" : (" (" + i + ")"));
-            if (!fileNames.contains(fileNameWithIndex))
-            {
-                fileNames.add(fileNameWithIndex);
-                return fileNameWithIndex;
-            }
-        }
-    }
+	private String createUniqueValidFileName(Chat chat) {
+		String fileName = createValidFileName(chat);
+		for (int i = 0; true; i++) {
+			String fileNameWithIndex = fileName
+					+ (i == 0 ? "" : (" (" + i + ")"));
+			if (!fileNames.contains(fileNameWithIndex)) {
+				fileNames.add(fileNameWithIndex);
+				return fileNameWithIndex;
+			}
+		}
+	}
 
-    /**
-     * Create a valid file name for a given (group) chat.
-     * 
-     * @param chat
-     *        (group) chat to create file name for
-     * @return valid file name
-     */
-    static String createValidFileName(Chat chat)
-    {
-        List<String> partners = chat.getPartners();
-        StringBuffer fileName = new StringBuffer();
-        fileName.append("Group Conversation ");
-        if (partners.size() > 4)
-        {
-            fileName.append(partners.get(0));
-            fileName.append(", ");
-            fileName.append(partners.get(1));
-            fileName.append(", ");
-            fileName.append(partners.get(2));
-            fileName.append(" and ");
-            fileName.append(partners.size() - 3);
-            fileName.append(" others");
+	/**
+	 * Create a valid file name for a given (group) chat.
+	 * 
+	 * @param chat
+	 *            (group) chat to create file name for
+	 * @return valid file name
+	 */
+	static String createValidFileName(Chat chat) {
+		List<String> partners = chat.getPartners();
+		StringBuffer fileName = new StringBuffer();
+		fileName.append("Group Conversation ");
+		if (partners.size() > 4) {
+			fileName.append(partners.get(0));
+			fileName.append(", ");
+			fileName.append(partners.get(1));
+			fileName.append(", ");
+			fileName.append(partners.get(2));
+			fileName.append(" and ");
+			fileName.append(partners.size() - 3);
+			fileName.append(" others");
 
-        }
-        else
-        {
-            fileName.append(StringUtils.join(partners, ", "));
-        }
-        SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM d yyyy");
-        fileName.append("; ");
-        Date date = new Date(chat.getFinish() * 1000);
-        fileName.append(formatter.format(date));
-        return fileName.toString();
-    }
+		} else {
+			fileName.append(StringUtils.join(partners, ", "));
+		}
+		SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM d yyyy");
+		fileName.append("; ");
+		Date date = new Date(chat.getFinish() * 1000);
+		fileName.append(formatter.format(date));
+		return fileName.toString();
+	}
 
-    /**
-     * Get XML entities grouped by categories, where the categories are the name of the contact that
-     * the home user chatted with. Given are chats for individual contacts, for which we want logs
-     * per contact, hence referencing by contact name
-     * 
-     * @param chats
-     *        chats to get XML entities for
-     * @return XML entities grouped by categories, where categories are contact names
-     */
-    private Map<String, List<XML>> getCategorizedXmlEntities(Map<String, List<Chat>> chats)
-    {
-        Map<String, List<XML>> categorizedXmlEntries = new HashMap<String, List<XML>>();
-        for (String contact : chats.keySet())
-        {
-            List<Chat> chatsForContact = chats.get(contact);
-            for (Chat chat : chatsForContact)
-            {
-                getCategorizedXmlEntitiesForSingleChat(categorizedXmlEntries, contact, chat, false);
-            }
-        }
-        return categorizedXmlEntries;
-    }
+	/**
+	 * Get XML entities grouped by categories, where the categories are the name
+	 * of the contact that the home user chatted with. Given are chats for
+	 * individual contacts, for which we want logs per contact, hence
+	 * referencing by contact name
+	 * 
+	 * @param chats
+	 *            chats to get XML entities for
+	 * @return XML entities grouped by categories, where categories are contact
+	 *         names
+	 */
+	private Map<String, List<XML>> getCategorizedXmlEntities(
+			Map<String, List<Chat>> chats) {
+		Map<String, List<XML>> categorizedXmlEntries = new HashMap<String, List<XML>>();
+		for (String contact : chats.keySet()) {
+			List<Chat> chatsForContact = chats.get(contact);
+			for (Chat chat : chatsForContact) {
+				getCategorizedXmlEntitiesForSingleChat(categorizedXmlEntries,
+						contact, chat, false);
+			}
+		}
+		return categorizedXmlEntries;
+	}
 
-    /**
-     * Get XML entities of the given chat, all grouped by the given category.
-     * 
-     * @param categorizedXmlEntities
-     *        XML entities grouped by categories, where XML entities are to be added to
-     * @param category
-     *        category to group XML entities by (may be contact name, group chat name)
-     * @param chat
-     *        chat to get XML entities for
-     */
-    private void getCategorizedXmlEntitiesForSingleChat(
-            Map<String, List<XML>> categorizedXmlEntities, String category, Chat chat, boolean group)
-    {
-        String to = group ? chat.getTo() : category;
-        if (chat.isEmpty())
-        {
-            return;
-        }
-        if (!categorizedXmlEntities.containsKey(category))
-        {
-            categorizedXmlEntities.put(category, new ArrayList<XML>());
-        }
-        categorizedXmlEntities.get(category).add(new SessionStart(chat, to));
-        for (Message message : chat.getMessages())
-        {
-            if (chat.isGroupChat())
-            {
-                categorizedXmlEntities.get(category).add(new GroupMessage(chat, message, to));
-            }
-            else
-            {
-                categorizedXmlEntities.get(category).add(new PrivateMessage(chat, message, to));
-            }
+	/**
+	 * Get XML entities of the given chat, all grouped by the given category.
+	 * 
+	 * @param categorizedXmlEntities
+	 *            XML entities grouped by categories, where XML entities are to
+	 *            be added to
+	 * @param category
+	 *            category to group XML entities by (may be contact name, group
+	 *            chat name)
+	 * @param chat
+	 *            chat to get XML entities for
+	 */
+	private void getCategorizedXmlEntitiesForSingleChat(
+			Map<String, List<XML>> categorizedXmlEntities, String category,
+			Chat chat, boolean group) {
+		String to = group ? chat.getTo() : category;
+		if (chat.isEmpty()) {
+			return;
+		}
+		if (!categorizedXmlEntities.containsKey(category)) {
+			categorizedXmlEntities.put(category, new ArrayList<XML>());
+		}
+		categorizedXmlEntities.get(category).add(new SessionStart(chat, to));
+		for (Message message : chat.getMessages()) {
+			if (chat.isGroupChat()) {
+				categorizedXmlEntities.get(category).add(
+						new GroupMessage(chat, message, to));
+			} else {
+				categorizedXmlEntities.get(category).add(
+						new PrivateMessage(chat, message, to));
+			}
 
-        }
-        categorizedXmlEntities.get(category).add(new SessionStop(chat, to));
-    }
+		}
+		categorizedXmlEntities.get(category).add(new SessionStop(chat, to));
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    public void outputIndividual(Map<String, List<Chat>> mappedChats)
-    {
-        log.info("Handle Trillian output of Skype export chats for {} individuals",
-                mappedChats.size());
-        Map<String, List<XML>> categorizedXmlEntities = getCategorizedXmlEntities(mappedChats);
-        File folder = new File(PARENT_FOLDER, "Query");
-        writeFiles(categorizedXmlEntities, folder);
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	public void outputIndividual(Map<String, List<Chat>> mappedChats) {
+		log.info(
+				"Handle Trillian output of Skype export chats for {} individuals",
+				mappedChats.size());
+		Map<String, List<XML>> categorizedXmlEntities = getCategorizedXmlEntities(mappedChats);
+		File folder = new File(PARENT_FOLDER, "Query");
+		writeFiles(categorizedXmlEntities, folder);
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    public void outputGroups(List<Chat> groupChats)
-    {
-        log.info("Handle Trillian output of Skype export for {} group chats", groupChats.size());
-        Map<String, List<XML>> categorizedXmlEntities = getCategorizedXmlEntities(groupChats);
-        File folder = new File(PARENT_FOLDER, "Channel");
-        writeFiles(categorizedXmlEntities, folder);
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	public void outputGroups(List<Chat> groupChats) {
+		log.info("Handle Trillian output of Skype export for {} group chats",
+				groupChats.size());
+		Map<String, List<XML>> categorizedXmlEntities = getCategorizedXmlEntities(groupChats);
+		File folder = new File(PARENT_FOLDER, "Channel");
+		writeFiles(categorizedXmlEntities, folder);
+	}
 
-    /**
-     * Write XML log files for each of the categories and for all their XML entities.
-     * 
-     * @param categorizedXmlEntities
-     *        XML entities mapped onto categories
-     * @param folder
-     *        folder for XML log files
-     */
-    private void writeFiles(Map<String, List<XML>> categorizedXmlEntities, File folder)
-    {
-        for (String category : categorizedXmlEntities.keySet())
-        {
-            String baseFileName = category;
-            File file = new File(folder, baseFileName + ".xml");
-            writeFile(categorizedXmlEntities.get(category), file);
-        }
-    }
+	/**
+	 * Write XML log files for each of the categories and for all their XML
+	 * entities.
+	 * 
+	 * @param categorizedXmlEntities
+	 *            XML entities mapped onto categories
+	 * @param folder
+	 *            folder for XML log files
+	 */
+	private void writeFiles(Map<String, List<XML>> categorizedXmlEntities,
+			File folder) {
+		for (String category : categorizedXmlEntities.keySet()) {
+			String baseFileName = category;
+			File file = new File(folder, baseFileName + ".xml");
+			writeFile(categorizedXmlEntities.get(category), file);
+		}
+	}
 
-    /**
-     * Write the given XML entities to a XML log file with the given base file name.
-     * 
-     * @param xmlEntities
-     *        XML entities to write
-     * @param file
-     *        file to write to
-     */
-    private void writeFile(List<XML> xmlEntities, File file)
-    {
-        FileWriter fileWriter = createFile(file);
-        BufferedWriter writer = new BufferedWriter(fileWriter);
-        try
-        {
-            for (XML xml : xmlEntities)
-            {
-                writer.write(xml.toXML());
-                writer.write("\r\n");
-            }
-            writer.close();
-        }
-        catch (IOException exception)
-        {
-            throw new RuntimeException("Problem writing file for " + file, exception);
-        }
-    }
+	/**
+	 * Write the given XML entities to a XML log file with the given base file
+	 * name.
+	 * 
+	 * @param xmlEntities
+	 *            XML entities to write
+	 * @param file
+	 *            file to write to
+	 */
+	private void writeFile(List<XML> xmlEntities, File file) {
+		FileWriter fileWriter = createFile(file);
+		BufferedWriter writer = new BufferedWriter(fileWriter);
+		try {
+			for (XML xml : xmlEntities) {
+				writer.write(xml.toXML());
+				writer.write("\r\n");
+			}
+			writer.close();
+		} catch (IOException exception) {
+			throw new RuntimeException("Problem writing file for " + file,
+					exception);
+		}
+	}
 
-    /**
-     * Create a file handle for the given base file name. Also creates folder, if needed
-     * 
-     * @param baseFileName
-     *        base file name (thus without extension)
-     * @return file handle
-     */
-    private FileWriter createFile(File file)
-    {
-        file.getParentFile().mkdirs();
-        try
-        {
-            return new FileWriter(file);
-        }
-        catch (IOException exception)
-        {
-            throw new RuntimeException("Problem opening file " + file, exception);
-        }
-    }
+	/**
+	 * Create a file handle for the given base file name. Also creates folder,
+	 * if needed
+	 * 
+	 * @param baseFileName
+	 *            base file name (thus without extension)
+	 * @return file handle
+	 */
+	private FileWriter createFile(File file) {
+		file.getParentFile().mkdirs();
+		try {
+			return new FileWriter(file);
+		} catch (IOException exception) {
+			throw new RuntimeException("Problem opening file " + file,
+					exception);
+		}
+	}
 
 }

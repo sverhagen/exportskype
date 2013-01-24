@@ -29,74 +29,67 @@ import com.sander.verhagen.DatabaseConnectionHelper;
  * 
  * @author Sander Verhagen
  */
-public class DatabaseConnectionHelperTest
-{
+public class DatabaseConnectionHelperTest {
 
-    /**
-     * Test for <code>DatabaseConnectionHelper.determineDatabaseUrl</code>.
-     */
-    @Test
-    public void testDetermineDatabaseUrl()
-    {
-        String fileName = "src\\test\\resources\\myHome\\Application Data\\Skype\\my.user\\main.db";
-        File file = new File(fileName);
-        System.setProperty("user.home", "src\\test\\resources\\myHome");
-        String string = DatabaseConnectionHelper.determineDatabaseUrl();
-        assertEquals("jdbc:sqlite:" + file.getAbsolutePath(), string);
-    }
+	/**
+	 * Test for <code>DatabaseConnectionHelper.determineDatabaseUrl</code>.
+	 */
+	@Test
+	public void testDetermineDatabaseUrl() {
+		String fileName = "src\\test\\resources\\myHome\\Application Data\\Skype\\my.user\\main.db";
+		File file = new File(fileName);
+		System.setProperty("user.home", "src\\test\\resources\\myHome");
+		String string = DatabaseConnectionHelper.determineDatabaseUrl();
+		assertEquals("jdbc:sqlite:" + file.getAbsolutePath(), string);
+	}
 
-    /**
-     * Test for <code>DatabaseConnectionHelper.determineDatabaseUrl</code> when no database exists.
-     */
-    @Test
-    public void testDetermineDatabaseUrlNoDatabase()
-    {
-        System.setProperty("user.home", "src\\test\\resources\\myHomeNoDatabase");
-        try
-        {
-            DatabaseConnectionHelper.determineDatabaseUrl();
-        }
-        catch (RuntimeException exception)
-        {
-            assertEquals("No database file found", exception.getMessage());
-        }
-    }
+	/**
+	 * Test for <code>DatabaseConnectionHelper.determineDatabaseUrl</code> when
+	 * no database exists.
+	 */
+	@Test
+	public void testDetermineDatabaseUrlNoDatabase() {
+		System.setProperty("user.home",
+				"src\\test\\resources\\myHomeNoDatabase");
+		try {
+			DatabaseConnectionHelper.determineDatabaseUrl();
+		} catch (RuntimeException exception) {
+			assertEquals("No database file found", exception.getMessage());
+		}
+	}
 
-    /**
-     * Test for <code>DatabaseConnectionHelper.determineDatabaseUrl</code> when multiple database
-     * exists.
-     */
-    @Test
-    public void testDetermineDatabaseUrlMultipleDatabases()
-    {
-        System.setProperty("user.home", "src\\test\\resources\\myHomeMultipleDatabases");
-        try
-        {
-            DatabaseConnectionHelper.determineDatabaseUrl();
-        }
-        catch (RuntimeException exception)
-        {
-            assertEquals("Multiple database files found; don't know which one to choose",
-                    exception.getMessage());
-        }
-    }
+	/**
+	 * Test for <code>DatabaseConnectionHelper.determineDatabaseUrl</code> when
+	 * multiple database exists.
+	 */
+	@Test
+	public void testDetermineDatabaseUrlMultipleDatabases() {
+		System.setProperty("user.home",
+				"src\\test\\resources\\myHomeMultipleDatabases");
+		try {
+			DatabaseConnectionHelper.determineDatabaseUrl();
+		} catch (RuntimeException exception) {
+			assertEquals(
+					"Multiple database files found; don't know which one to choose",
+					exception.getMessage());
+		}
+	}
 
-    /**
-     * Test for {@link DatabaseConnectionHelper#open()} and {@link DatabaseConnectionHelper#close()}
-     * .
-     * 
-     * @throws SQLException
-     *         if a database access error occurs
-     */
-    @Test
-    public void testConnection() throws SQLException
-    {
-        System.setProperty("user.home", "src\\test\\resources\\myHome");
-        DatabaseConnectionHelper subject = new DatabaseConnectionHelper();
-        Connection connection = subject.open();
-        assertFalse(connection.isClosed());
-        subject.close();
-        assertTrue(connection.isClosed());
-    }
+	/**
+	 * Test for {@link DatabaseConnectionHelper#open()} and
+	 * {@link DatabaseConnectionHelper#close()} .
+	 * 
+	 * @throws SQLException
+	 *             if a database access error occurs
+	 */
+	@Test
+	public void testConnection() throws SQLException {
+		System.setProperty("user.home", "src\\test\\resources\\myHome");
+		DatabaseConnectionHelper subject = new DatabaseConnectionHelper();
+		Connection connection = subject.open();
+		assertFalse(connection.isClosed());
+		subject.close();
+		assertTrue(connection.isClosed());
+	}
 
 }

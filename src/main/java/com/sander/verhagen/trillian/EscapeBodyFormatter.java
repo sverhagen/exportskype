@@ -15,22 +15,20 @@
 package com.sander.verhagen.trillian;
 
 /**
- * Helper to escape the body of the message in the style of Trillian XML log format, which seems a
- * little awkward.
+ * Helper to escape the body of the message in the style of Trillian XML log
+ * format, which seems a little awkward.
  * 
  * @author Sander Verhagen
  */
-public class EscapeBodyFormatter implements BodyFormatter
-{
-    /**
-     * Escape the given body for use in Trillian XML log format.
-     * 
-     * @param originalBody
-     *        body that needs to be formatted
-     * @return formatted body
-     */
-    public String format(String originalBody)
-    {
-        return EscapeHelper.escape(originalBody);
-    }
+public class EscapeBodyFormatter implements BodyFormatter {
+	/**
+	 * Escape the given body for use in Trillian XML log format.
+	 * 
+	 * @param originalBody
+	 *            body that needs to be formatted
+	 * @return formatted body
+	 */
+	public String format(String originalBody) {
+		return EscapeHelper.escape(originalBody);
+	}
 }

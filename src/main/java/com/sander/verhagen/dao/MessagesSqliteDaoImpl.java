@@ -24,39 +24,35 @@ import java.util.List;
 import com.sander.verhagen.domain.Message;
 
 /**
- * Implementation of DAO for access to messages in the Skype database (&quot;Messages&quot; table).
+ * Implementation of DAO for access to messages in the Skype database
+ * (&quot;Messages&quot; table).
  * 
  * @author Sander Verhagen
  */
-public class MessagesSqliteDaoImpl implements MessagesDao
-{
-    private Connection connection;
+public class MessagesSqliteDaoImpl implements MessagesDao {
+	private Connection connection;
 
-    /**
-     * Constructor.
-     * 
-     * @param connection
-     *        (opened) database connection
-     */
-    public MessagesSqliteDaoImpl(Connection connection)
-    {
-        this.connection = connection;
-    }
+	/**
+	 * Constructor.
+	 * 
+	 * @param connection
+	 *            (opened) database connection
+	 */
+	public MessagesSqliteDaoImpl(Connection connection) {
+		this.connection = connection;
+	}
 
-    public List<Message> getMessages() throws SQLException
-    {
-        List<Message> messages = new ArrayList<Message>();
-        Statement statement = connection.createStatement();
-        String sql = "SELECT * FROM Messages";
-        ResultSet resultSet = statement.executeQuery(sql);
-        while (resultSet.next())
-        {
-            Message message = new Message(resultSet);
-            if (!message.isEmpty())
-            {
-                messages.add(message);
-            }
-        }
-        return messages;
-    }
+	public List<Message> getMessages() throws SQLException {
+		List<Message> messages = new ArrayList<Message>();
+		Statement statement = connection.createStatement();
+		String sql = "SELECT * FROM Messages";
+		ResultSet resultSet = statement.executeQuery(sql);
+		while (resultSet.next()) {
+			Message message = new Message(resultSet);
+			if (!message.isEmpty()) {
+				messages.add(message);
+			}
+		}
+		return messages;
+	}
 }

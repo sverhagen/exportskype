@@ -36,36 +36,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Implementation of DAO for access to accounts in the Skype database (&quot;Accounts&quot; table).
+ * Implementation of DAO for access to accounts in the Skype database
+ * (&quot;Accounts&quot; table).
  * 
  * @author Sander Verhagen
  */
-public class AccountsSqliteDaoImpl implements AccountsDao
-{
-    private Connection connection;
+public class AccountsSqliteDaoImpl implements AccountsDao {
+	private Connection connection;
 
-    /**
-     * Constructor.
-     * 
-     * @param connection
-     *        (opened) database connection
-     */
-    public AccountsSqliteDaoImpl(Connection connection)
-    {
-        this.connection = connection;
-    }
+	/**
+	 * Constructor.
+	 * 
+	 * @param connection
+	 *            (opened) database connection
+	 */
+	public AccountsSqliteDaoImpl(Connection connection) {
+		this.connection = connection;
+	}
 
-    public List<String> getSkypeNames() throws SQLException
-    {
-        List<String> skypeNames = new ArrayList<String>();
-        Statement statement = connection.createStatement();
-        String sql = "SELECT skypename FROM Accounts";
-        ResultSet resultSet = statement.executeQuery(sql);
-        while (resultSet.next())
-        {
-            skypeNames.add(resultSet.getString("skypename"));
-        }
-        return skypeNames;
-    }
+	public List<String> getSkypeNames() throws SQLException {
+		List<String> skypeNames = new ArrayList<String>();
+		Statement statement = connection.createStatement();
+		String sql = "SELECT skypename FROM Accounts";
+		ResultSet resultSet = statement.executeQuery(sql);
+		while (resultSet.next()) {
+			skypeNames.add(resultSet.getString("skypename"));
+		}
+		return skypeNames;
+	}
 
 }

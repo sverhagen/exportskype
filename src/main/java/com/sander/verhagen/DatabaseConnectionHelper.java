@@ -31,79 +31,70 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Sander Verhagen
  */
-public class DatabaseConnectionHelper
-{
-    private static Logger log = LoggerFactory.getLogger(DatabaseConnectionHelper.class);
+public class DatabaseConnectionHelper {
+	private static Logger log = LoggerFactory
+			.getLogger(DatabaseConnectionHelper.class);
 
-    private Connection connection;
+	private Connection connection;
 
-    /**
-     * Constructor.
-     */
-    public DatabaseConnectionHelper()
-    {
-        try
-        {
-            Class.forName("org.sqlite.JDBC");
-        }
-        catch (ClassNotFoundException exception)
-        {
-            throw new RuntimeException("Requires SQLite JDBC driver on classpath", exception);
-        }
-    }
+	/**
+	 * Constructor.
+	 */
+	public DatabaseConnectionHelper() {
+		try {
+			Class.forName("org.sqlite.JDBC");
+		} catch (ClassNotFoundException exception) {
+			throw new RuntimeException(
+					"Requires SQLite JDBC driver on classpath", exception);
+		}
+	}
 
-    /**
-     * Open the database connection.
-     * 
-     * @return database connection
-     */
-    public Connection open()
-    {
-        try
-        {
-            String url = determineDatabaseUrl();
-            log.info("Determined database URL: {}", url);
-            connection = DriverManager.getConnection(url);
-            return connection;
-        }
-        catch (SQLException exception)
-        {
-            throw new RuntimeException("Problem opening database connection", exception);
-        }
-    }
+	/**
+	 * Open the database connection.
+	 * 
+	 * @return database connection
+	 */
+	public Connection open() {
+		try {
+			String url = determineDatabaseUrl();
+			log.info("Determined database URL: {}", url);
+			connection = DriverManager.getConnection(url);
+			return connection;
+		} catch (SQLException exception) {
+			throw new RuntimeException("Problem opening database connection",
+					exception);
+		}
+	}
 
-    /**
-     * Close the database connection.
-     */
-    public void close()
-    {
-        try
-        {
-            connection.close();
-        }
-        catch (SQLException exception)
-        {
-            throw new RuntimeException("Problem closing database connection", exception);
-        }
-    }
+	/**
+	 * Close the database connection.
+	 */
+	public void close() {
+		try {
+			connection.close();
+		} catch (SQLException exception) {
+			throw new RuntimeException("Problem closing database connection",
+					exception);
+		}
+	}
 
-    /**
-     * Determine the database URL. The trick here is to determine it without asking the user to tell
-     * us their Skype name. Note that this is currently working for Windows, it should be not too
-     * difficult to make it work for other platforms, if anyone desires this. Note that this is
-     * currently only supporting a single account for each system user, it should not be too
-     * difficult to make it work for multiple users<br/>
-     * <br/>
-     * The file location of the database should be something like:
-     * <code>C:\Users\&lt;Windows user&gt;\Application Data\Skype\&lt;Skype user&gt;\main.db</code>
-     * 
-     * @return database URL as determined
-     */
-    static String determineDatabaseUrl()
-    {
-        String userHome = System.getProperty("user.home");
+	/**
+	 * Determine the database URL. The trick here is to determine it without
+	 * asking the user to tell us their Skype name. Note that this is currently
+	 * working for Windows, it should be not too difficult to make it work for
+	 * other platforms, if anyone desires this. Note that this is currently only
+	 * supporting a single account for each system user, it should not be too
+	 * difficult to make it work for multiple users<br/>
+	 * <br/>
+	 * The file location of the database should be something like:
+	 * <code>C:\Users\&lt;Windows user&gt;\Application Data\Skype\&lt;Skype user&gt;\main.db</code>
+	 * 
+	 * @return database URL as determined
+	 */
+	static String determineDatabaseUrl() {
+		String userHome = System.getProperty("user.home");
 
-        File homeFolder = new File(userHome + "\\Application Data\\Skype");
+		File homeFolder = new File(userHome + "\\Application Data\\Skype");
 		if (!homeFolder.exists()) {
 			throw new RuntimeException(
 					"Skype application data not found. Maybe no Skype installed. Looked here: "
@@ -111,25 +102,23 @@ public class DatabaseConnectionHelper
 		}
 
 		String[] extensions = { "db" };
-        Collection<File> files = FileUtils.listFiles(homeFolder, extensions, true);
-        List<File> mainFiles = new ArrayList<File>();
-        for (File file : files)
-        {
-            if (file.getName().equals("main.db"))
-            {
-                mainFiles.add(file);
-            }
-        }
+		Collection<File> files = FileUtils.listFiles(homeFolder, extensions,
+				true);
+		List<File> mainFiles = new ArrayList<File>();
+		for (File file : files) {
+			if (file.getName().equals("main.db")) {
+				mainFiles.add(file);
+			}
+		}
 
-        switch (mainFiles.size())
-        {
-            case 0:
-                throw new RuntimeException("No database file found");
-            case 1:
-                return "jdbc:sqlite:" + mainFiles.get(0).getAbsolutePath();
-            default:
-                throw new RuntimeException("Multiple database files found; "
-                        + "don't know which one to choose");
-        }
-    }
+		switch (mainFiles.size()) {
+		case 0:
+			throw new RuntimeException("No database file found");
+		case 1:
+			return "jdbc:sqlite:" + mainFiles.get(0).getAbsolutePath();
+		default:
+			throw new RuntimeException("Multiple database files found; "
+					+ "don't know which one to choose");
+		}
+	}
 }

@@ -21,55 +21,53 @@ import com.sander.verhagen.domain.Chat;
  * 
  * @author Sander Verhagen
  */
-abstract public class AbstractSession implements XML
-{
-    private Chat chat;
+abstract public class AbstractSession implements XML {
+	private Chat chat;
 
-    private String to;
+	private String to;
 
-    /**
-     * Constructor.
-     * 
-     * @param chat
-     *        total chat ({@link Chat})
-     * @param to
-     *        user name that is to be treated as communication partner
-     */
-    public AbstractSession(Chat chat, String to)
-    {
-        this.chat = chat;
-        this.to = to;
-    }
+	/**
+	 * Constructor.
+	 * 
+	 * @param chat
+	 *            total chat ({@link Chat})
+	 * @param to
+	 *            user name that is to be treated as communication partner
+	 */
+	public AbstractSession(Chat chat, String to) {
+		this.chat = chat;
+		this.to = to;
+	}
 
-    /**
-     * Format session entity XML. <br/>
-     * <br/>
-     * Looks like: <code>&lt;session type=&quot;stop&quot; time=&quot;1348768766&quot;
-     * ms=&quot;128&quot; medium=&quot;SKYPE&quot; to=&quot;some.user&quot;
-     * from=&quot;sander.verhagen&quot;/&gt;</code>
-     * 
-     * @param type
-     *        type of the session entity, either <code>start</code> or <code>stop</code>
-     * @param time
-     *        time of the session start/stop
-     * @return entity XML
-     */
-    protected String toXML(String type, long time)
-    {
-        StringBuilder result = new StringBuilder();
-        result.append("<session ");
-        result.append("type=\"" + type + "\" ");
-        result.append("time=\"" + time + "\" ");
-        result.append("medium=\"SKYPE\" ");
-        // TODO: can it never happen that to and from end up being the same?
-        result.append("to=\"" + EscapeHelper.escape(this.to) + "\" ");
-        result.append("from=\"" + EscapeHelper.escape(chat.getFrom()) + "\" ");
-        result.append("/>");
-        return result.toString();
-    }
+	/**
+	 * Format session entity XML. <br/>
+	 * <br/>
+	 * Looks like:
+	 * <code>&lt;session type=&quot;stop&quot; time=&quot;1348768766&quot;
+	 * ms=&quot;128&quot; medium=&quot;SKYPE&quot; to=&quot;some.user&quot;
+	 * from=&quot;sander.verhagen&quot;/&gt;</code>
+	 * 
+	 * @param type
+	 *            type of the session entity, either <code>start</code> or
+	 *            <code>stop</code>
+	 * @param time
+	 *            time of the session start/stop
+	 * @return entity XML
+	 */
+	protected String toXML(String type, long time) {
+		StringBuilder result = new StringBuilder();
+		result.append("<session ");
+		result.append("type=\"" + type + "\" ");
+		result.append("time=\"" + time + "\" ");
+		result.append("medium=\"SKYPE\" ");
+		// TODO: can it never happen that to and from end up being the same?
+		result.append("to=\"" + EscapeHelper.escape(this.to) + "\" ");
+		result.append("from=\"" + EscapeHelper.escape(chat.getFrom()) + "\" ");
+		result.append("/>");
+		return result.toString();
+	}
 
-    protected Chat getChat()
-    {
-        return chat;
-    }
+	protected Chat getChat() {
+		return chat;
+	}
 }

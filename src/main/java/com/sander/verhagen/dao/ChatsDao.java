@@ -20,18 +20,18 @@ import java.util.List;
 import com.sander.verhagen.domain.Chat;
 
 /**
- * Definition of DAO for access to chats in the Skype database (&quot;Chats&quot; table).
+ * Definition of DAO for access to chats in the Skype database
+ * (&quot;Chats&quot; table).
  * 
  * @author Sander Verhagen
  */
-public interface ChatsDao
-{
-    /**
-     * Get all chats from the Skype database.
-     * 
-     * @return all chats
-     * @throws SQLException
-     *         problem with database access
-     */
-    List<Chat> getChats() throws SQLException;
+public interface ChatsDao {
+	/**
+	 * Get all chats from the Skype database.
+	 * 
+	 * @return all chats
+	 * @throws SQLException
+	 *             problem with database access
+	 */
+	List<Chat> getChats() throws SQLException;
 }

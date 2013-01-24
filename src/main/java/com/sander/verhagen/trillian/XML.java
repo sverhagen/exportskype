@@ -19,12 +19,11 @@ package com.sander.verhagen.trillian;
  * 
  * @author Sander Verhagen
  */
-public interface XML
-{
-    /**
-     * Format entity XML.
-     * 
-     * @return entity XML
-     */
-    String toXML();
+public interface XML {
+	/**
+	 * Format entity XML.
+	 * 
+	 * @return entity XML
+	 */
+	String toXML();
 }

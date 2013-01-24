@@ -17,27 +17,25 @@ package com.sander.verhagen.trillian;
 import com.sander.verhagen.domain.Chat;
 
 /**
- * Session entity of <code>type=&quot;start&quot;</code> in the Trillian XML log format.
+ * Session entity of <code>type=&quot;start&quot;</code> in the Trillian XML log
+ * format.
  * 
  * @author Sander Verhagen
  */
-public class SessionStart extends AbstractSession
-{
-    /**
-     * Constructor.
-     * 
-     * @param chat
-     *        total chat ({@link Chat})
-     * @param to
-     *        user name that is to be treated as communication partner
-     */
-    public SessionStart(Chat chat, String to)
-    {
-        super(chat, to);
-    }
+public class SessionStart extends AbstractSession {
+	/**
+	 * Constructor.
+	 * 
+	 * @param chat
+	 *            total chat ({@link Chat})
+	 * @param to
+	 *            user name that is to be treated as communication partner
+	 */
+	public SessionStart(Chat chat, String to) {
+		super(chat, to);
+	}
 
-    public String toXML()
-    {
-        return toXML("start", getChat().getStart());
-    }
+	public String toXML() {
+		return toXML("start", getChat().getStart());
+	}
 }

@@ -22,26 +22,24 @@ import com.sander.verhagen.domain.Message;
  * 
  * @author Sander Verhagen
  */
-public class GroupMessage extends AbstractMessage
-{
-    /**
-     * Constructor, see {@link AbstractMessage#AbstractMessage(Chat, Message, String)}.
-     * 
-     * @param chat
-     *        total chat ({@link Chat})
-     * @param message
-     *        single message in chat ({@link Message})
-     * @param to
-     *        user name that is to be treated as communication partner
-     */
-    public GroupMessage(Chat chat, Message message, String to)
-    {
-        super(chat, message, to);
-    }
+public class GroupMessage extends AbstractMessage {
+	/**
+	 * Constructor, see
+	 * {@link AbstractMessage#AbstractMessage(Chat, Message, String)}.
+	 * 
+	 * @param chat
+	 *            total chat ({@link Chat})
+	 * @param message
+	 *            single message in chat ({@link Message})
+	 * @param to
+	 *            user name that is to be treated as communication partner
+	 */
+	public GroupMessage(Chat chat, Message message, String to) {
+		super(chat, message, to);
+	}
 
-    @Override
-    protected String getMessageType()
-    {
-        return "groupMessage";
-    }
+	@Override
+	protected String getMessageType() {
+		return "groupMessage";
+	}
 }

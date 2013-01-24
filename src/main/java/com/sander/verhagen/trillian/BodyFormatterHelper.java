@@ -14,35 +14,32 @@
 
 package com.sander.verhagen.trillian;
 
-
 /**
  * Helper to delegate to all {@link BodyFormatter}s.
  * 
  * @author Sander Verhagen
  */
-final public class BodyFormatterHelper
-{
-    private static BodyFormatter escapeBodyFormatter = new EscapeBodyFormatter();
+final public class BodyFormatterHelper {
+	private static BodyFormatter escapeBodyFormatter = new EscapeBodyFormatter();
 
-    private static BodyFormatter tagBodyFormatter = new TagBodyFormatter();
+	private static BodyFormatter tagBodyFormatter = new TagBodyFormatter();
 
-    /**
-     * Hidden constructor.
-     */
-    private BodyFormatterHelper()
-    {
-        ;
-    }
+	/**
+	 * Hidden constructor.
+	 */
+	private BodyFormatterHelper() {
+		;
+	}
 
-    /**
-     * Format the given body by delegating to all {@link BodyFormatter}s.
-     * 
-     * @param originalBody
-     *        body that needs to be formatted
-     * @return formatted body
-     */
-    static String format(String originalBody)
-    {
-        return escapeBodyFormatter.format(tagBodyFormatter.format(originalBody));
-    }
+	/**
+	 * Format the given body by delegating to all {@link BodyFormatter}s.
+	 * 
+	 * @param originalBody
+	 *            body that needs to be formatted
+	 * @return formatted body
+	 */
+	static String format(String originalBody) {
+		return escapeBodyFormatter
+				.format(tagBodyFormatter.format(originalBody));
+	}
 }
