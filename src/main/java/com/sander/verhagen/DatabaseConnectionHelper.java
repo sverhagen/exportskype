@@ -91,18 +91,10 @@ public class DatabaseConnectionHelper {
 	 * 
 	 * @return database URL as determined
 	 */
-	static String determineDatabaseUrl() {
-		String userHome = System.getProperty("user.home");
-
-		File homeFolder = new File(userHome + "\\Application Data\\Skype");
-		if (!homeFolder.exists()) {
-			throw new RuntimeException(
-					"Skype application data not found. Maybe no Skype installed. Looked here: "
-							+ homeFolder);
-		}
-
+	String determineDatabaseUrl() {
+		File skypeFolder = getSkypeFolder();
 		String[] extensions = { "db" };
-		Collection<File> files = FileUtils.listFiles(homeFolder, extensions,
+		Collection<File> files = FileUtils.listFiles(skypeFolder, extensions,
 				true);
 		List<File> mainFiles = new ArrayList<File>();
 		for (File file : files) {
@@ -113,12 +105,33 @@ public class DatabaseConnectionHelper {
 
 		switch (mainFiles.size()) {
 		case 0:
-			throw new RuntimeException("No database file found");
+			throw new RuntimeException("No database file found. Looked here: "
+					+ skypeFolder);
 		case 1:
 			return "jdbc:sqlite:" + mainFiles.get(0).getAbsolutePath();
 		default:
 			throw new RuntimeException("Multiple database files found; "
 					+ "don't know which one to choose");
 		}
+	}
+
+	File getSkypeFolder() {
+		File applicationData = getApplicationDataFolder();
+		File skypeFolder = new File(applicationData, "Skype");
+		if (!skypeFolder.exists()) {
+			throw new RuntimeException(
+					"Skype application data not found. Maybe no Skype installed. Looked here: "
+							+ skypeFolder);
+		}
+		return skypeFolder;
+	}
+
+	File getApplicationDataFolder() {
+		String applicationData = System.getenv("APPDATA");
+		if (applicationData == null) {
+			String userHome = System.getProperty("user.home");
+			applicationData = userHome + "\\Application Data";
+		}
+		return new File(applicationData);
 	}
 }

@@ -20,6 +20,7 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import org.easymock.EasyMock;
 import org.junit.Test;
 
 import com.sander.verhagen.DatabaseConnectionHelper;
@@ -32,15 +33,55 @@ import com.sander.verhagen.DatabaseConnectionHelper;
 public class DatabaseConnectionHelperTest {
 
 	/**
+	 * Test for <code>DatabaseConnectionHelper.getApplicationDataFolder</code>
+	 * for normal situation (in which case <code>%APPDATA%</code> is available).
+	 * Rumor has it <code>%APPDATA%</code> is not available for &quot;Run
+	 * as...&quot;, hence it's a red flag
+	 */
+	@Test
+	public void testGetApplicationDataFolderNormal() {
+		DatabaseConnectionHelper subject = new DatabaseConnectionHelper();
+		String expected = System.getenv("APPDATA");
+		File applicationData = subject.getApplicationDataFolder();
+		assertEquals(expected, applicationData.toString());
+	}
+
+	/**
+	 * Test for <code>DatabaseConnectionHelper.getSkypeFolder</code>. We have to
+	 * fake where the application data are located since the PC that runs the
+	 * test may not have Skype installed
+	 */
+	@Test
+	public void testGetSkypeFolder() {
+		final String applicationData = "src\\test\\resources\\myHome\\Application Data";
+		DatabaseConnectionHelper subject = new DatabaseConnectionHelper() {
+			File getApplicationDataFolder() {
+				return new File(applicationData);
+			}
+		};
+
+		String expected = applicationData + "\\Skype";
+		File skypeFolder = subject.getSkypeFolder();
+		assertEquals(expected, skypeFolder.toString());
+	}
+
+	/**
 	 * Test for <code>DatabaseConnectionHelper.determineDatabaseUrl</code>.
 	 */
 	@Test
 	public void testDetermineDatabaseUrl() {
-		String fileName = "src\\test\\resources\\myHome\\Application Data\\Skype\\my.user\\main.db";
-		File file = new File(fileName);
-		System.setProperty("user.home", "src\\test\\resources\\myHome");
-		String string = DatabaseConnectionHelper.determineDatabaseUrl();
-		assertEquals("jdbc:sqlite:" + file.getAbsolutePath(), string);
+		final String applicationData = "src\\test\\resources\\myHome\\Application Data";
+		String fileName = applicationData + "\\Skype\\my.user\\main.db";
+		DatabaseConnectionHelper subject = new DatabaseConnectionHelper() {
+			File getApplicationDataFolder() {
+				return new File(applicationData);
+			}
+		};
+
+		File expectedFile = new File(fileName);
+		String expectedUrl = "jdbc:sqlite:" + expectedFile.getAbsolutePath();
+		String string = subject.determineDatabaseUrl();
+		assertEquals(expectedUrl, string);
 	}
 
 	/**
@@ -49,12 +90,19 @@ public class DatabaseConnectionHelperTest {
 	 */
 	@Test
 	public void testDetermineDatabaseUrlNoDatabase() {
-		System.setProperty("user.home",
-				"src\\test\\resources\\myHomeNoDatabase");
+		final String applicationData = "src\\test\\resources\\myHomeNoDatabase\\Application Data";
+		DatabaseConnectionHelper subject = new DatabaseConnectionHelper() {
+			File getApplicationDataFolder() {
+				return new File(applicationData);
+			}
+		};
+
 		try {
-			DatabaseConnectionHelper.determineDatabaseUrl();
+			subject.determineDatabaseUrl();
+			fail("should not have found a database");
 		} catch (RuntimeException exception) {
-			assertEquals("No database file found", exception.getMessage());
+			String expected = "No database file found. Looked here: ";
+			assertTrue(exception.getMessage().startsWith(expected));
 		}
 	}
 
@@ -64,14 +112,19 @@ public class DatabaseConnectionHelperTest {
 	 */
 	@Test
 	public void testDetermineDatabaseUrlMultipleDatabases() {
-		System.setProperty("user.home",
-				"src\\test\\resources\\myHomeMultipleDatabases");
+		final String applicationData = "src\\test\\resources\\myHomeMultipleDatabases\\Application Data";
+		DatabaseConnectionHelper subject = new DatabaseConnectionHelper() {
+			File getApplicationDataFolder() {
+				return new File(applicationData);
+			}
+		};
+
 		try {
-			DatabaseConnectionHelper.determineDatabaseUrl();
+			subject.determineDatabaseUrl();
+			fail("should not have found a single database");
 		} catch (RuntimeException exception) {
-			assertEquals(
-					"Multiple database files found; don't know which one to choose",
-					exception.getMessage());
+			String expected = "Multiple database files found; don't know which one to choose";
+			assertEquals(expected, exception.getMessage());
 		}
 	}
 
@@ -84,8 +137,13 @@ public class DatabaseConnectionHelperTest {
 	 */
 	@Test
 	public void testConnection() throws SQLException {
-		System.setProperty("user.home", "src\\test\\resources\\myHome");
-		DatabaseConnectionHelper subject = new DatabaseConnectionHelper();
+		final String applicationData = "src\\test\\resources\\myHome\\Application Data";
+		DatabaseConnectionHelper subject = new DatabaseConnectionHelper() {
+			File getApplicationDataFolder() {
+				return new File(applicationData);
+			}
+		};
+
 		Connection connection = subject.open();
 		assertFalse(connection.isClosed());
 		subject.close();
