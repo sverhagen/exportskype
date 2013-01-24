@@ -53,6 +53,10 @@ public class JLoggingTable extends JPanel
             String message = event.getMessage().toString();
             String level = event.getLevel().toString();
             addRow(date, level, message);
+            Throwable throwable = event.getThrowableInformation().getThrowable();
+            if (throwable!=null) {
+				addRow(throwable.getMessage());
+			}
         }
     };
 
@@ -106,5 +110,10 @@ public class JLoggingTable extends JPanel
         String dateString = DATE_FORMATTER.format(date);
         String timeString = TIME_FORMATTER.format(date);
         model.addRow(new String[] {dateString, timeString, level, message});
+    }
+    
+    private void addRow(String message)
+    {
+    	model.addRow(new String[] {"", "", "", message});
     }
 }

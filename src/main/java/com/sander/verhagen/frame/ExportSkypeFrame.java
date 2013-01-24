@@ -118,6 +118,10 @@ public class ExportSkypeFrame extends JFrame
     public static void main(String args[])
     {
         new ExportSkypeFrame();
-        new ExportSkype().execute();
+		try {
+			new ExportSkype().execute();
+		} catch (Exception exception) {
+			log.error("Problem executing export", exception);
+		}
     }
 }

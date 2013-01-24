@@ -104,7 +104,13 @@ public class DatabaseConnectionHelper
         String userHome = System.getProperty("user.home");
 
         File homeFolder = new File(userHome + "\\Application Data\\Skype");
-        String[] extensions = {"db"};
+		if (!homeFolder.exists()) {
+			throw new RuntimeException(
+					"Skype application data not found. Maybe no Skype installed. Looked here: "
+							+ homeFolder);
+		}
+
+		String[] extensions = { "db" };
         Collection<File> files = FileUtils.listFiles(homeFolder, extensions, true);
         List<File> mainFiles = new ArrayList<File>();
         for (File file : files)
