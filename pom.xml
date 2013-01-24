@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.sander.verhagen</groupId>
     <artifactId>exportskype</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.4-SNAPSHOT</version>
     <name>Export Skype</name>
     <description>Little command-line tool to export Skype chat history to another format. Implemented format is Trillian XML log format, but other formats may easily be supported by adding implementations of the OutputHandler interface</description>
     <inceptionYear>2012</inceptionYear>
@@ -20,7 +20,7 @@
     <scm>
         <connection>scm:git:https://code.google.com/p/exportskype/</connection>
         <developerConnection>scm:git:https://code.google.com/p/exportskype/</developerConnection>
-        <tag>exportskype-1.0.3</tag>
+        <tag>HEAD</tag>
         <url>scm:git:https://code.google.com/p/exportskype/</url>
     </scm>
     <properties>
@@ -140,7 +140,7 @@
                 </executions>
                 <configuration>
                     <transformers>
-                        <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer"></transformer>
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer" />
                         <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheNoticeResourceTransformer">
                             <addHeader>true</addHeader>
                         </transformer>
