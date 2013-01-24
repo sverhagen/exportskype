@@ -72,6 +72,12 @@
     <build>
         <resources>
             <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>Thumbs.db</exclude>
+                </excludes>
+            </resource>
+            <resource>
                 <targetPath>META-INF</targetPath>
                 <directory>${basedir}</directory>
                 <includes>
