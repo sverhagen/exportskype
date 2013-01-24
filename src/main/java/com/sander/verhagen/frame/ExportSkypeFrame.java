@@ -105,8 +105,8 @@ public class ExportSkypeFrame extends JFrame {
 		new ExportSkypeFrame();
 		try {
 			new ExportSkype().execute();
-		} catch (Exception exception) {
-			log.error("Problem executing export", exception);
+		} catch (Throwable throwable) {
+			log.error("Problem executing export", throwable);
 		}
 	}
 }
