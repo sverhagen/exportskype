@@ -60,7 +60,7 @@ public class ExportSkypeFrame extends JFrame
             textPane.addHyperlinkText("Apache License",
                     "http://www.apache.org/licenses/LICENSE-2.0");
             textPane.addText(", free and \"as-is\". More information on ");
-            textPane.addHyperlinkText("GitHub", "http://sverhagen.github.com/Export-Skype/");
+            textPane.addHyperlinkText("Google Code", "http://code.google.com/p/exportskype/");
             textPane.setAlignment(StyleConstants.ALIGN_CENTER);
             add(BorderLayout.SOUTH, textPane);
         }

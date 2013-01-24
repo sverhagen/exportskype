@@ -150,6 +150,18 @@ public class Chat
     }
 
     /**
+     * Whether this chat has any messages at all. Shortcut for <code>isEmpty()</code> on
+     * {@link #getMessages()}
+     * 
+     * 
+     * @return whether any messages
+     */
+    public boolean isEmpty()
+    {
+        return messages.isEmpty();
+    }
+
+    /**
      * Get the user for which we are exporting Skype logs.
      * 
      * @return user for which exporting

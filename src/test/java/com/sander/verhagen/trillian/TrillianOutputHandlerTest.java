@@ -16,7 +16,15 @@ package com.sander.verhagen.trillian;
 
 import static org.junit.Assert.*;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static org.easymock.EasyMock.*;
 import org.junit.Test;
+
+import com.sander.verhagen.domain.Chat;
 
 /**
  * Test for {@link TrillianOutputHandler}.
@@ -26,21 +34,25 @@ import org.junit.Test;
 public class TrillianOutputHandlerTest
 {
     /**
-     * Test for <code>TrillianOutputHandler.testGetValidFileName</code>.
+     * Test for <code>TrillianOutputHandler.createValidFileName</code>.
      */
     @Test
     public void testGetValidFileName()
     {
-        String original;
-        String result;
+        Chat chat = createMock(Chat.class);
 
-        original = "#sander.verhagen/$some.user;d2bee9fda29d99bc";
-        result = TrillianOutputHandler.getValidFileName(original);
-        assertEquals("#sander.verhagen$d2bee9fda29d99bc", result);
+        List<String> value = new ArrayList<String>();
+        value.add("sander.verhagen");
 
-        original = "#sander.verhagen/$457c96a25e9b9bf5";
-        result = TrillianOutputHandler.getValidFileName(original);
-        assertEquals("#sander.verhagen$457c96a25e9b9bf5", result);
+        expect(chat.getPartners()).andReturn(value);
+        expect(chat.getFinish()).andReturn(0L /* Wed Dec 31 1969 */);
+
+        SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM d yyyy");
+        String date = formatter.format(new Date(0L));
+
+        replay(chat);
+        String result = TrillianOutputHandler.createValidFileName(chat);
+        assertEquals("Group Conversation sander.verhagen; " + date, result);
+        verify(chat);
     }
-
 }
