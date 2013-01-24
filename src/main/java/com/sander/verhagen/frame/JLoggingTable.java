@@ -26,6 +26,7 @@ import javax.swing.table.DefaultTableModel;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.ThrowableInformation;
 import org.apache.log4j.varia.NullAppender;
 
 /**
@@ -52,9 +53,12 @@ public class JLoggingTable extends JPanel {
 			String message = event.getMessage().toString();
 			String level = event.getLevel().toString();
 			addRow(date, level, message);
-			Throwable throwable = event.getThrowableInformation()
-					.getThrowable();
-			if (throwable != null) {
+
+			ThrowableInformation throwableInformation = event
+					.getThrowableInformation();
+			if (throwableInformation != null) {
+				Throwable throwable = event.getThrowableInformation()
+						.getThrowable();
 				addRow(throwable.getMessage());
 			}
 		}
