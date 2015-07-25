@@ -8,7 +8,7 @@ Having installed and set up Maven you would do as follows:
 
 	...\exportskype> mvn install
 
-In case of `BUILD SUCCESS`, you should find an executable JAR file in target\exportskype-0.0.1-SNAPSHOT.jar that can be ran as follows:
+In case of `BUILD SUCCESS`, you should find an executable JAR file in `target\exportskype-0.0.1-SNAPSHOT.jar` that can be ran as follows:
 
 	...\exportskype> java -jar target\exportskype-0.0.1-SNAPSHOT.jar
 
