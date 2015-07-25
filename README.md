@@ -2,7 +2,7 @@
 
 Little tool to export Skype chat history to another format. Implemented format is Trillian XML log format, but other formats may easily be supported by adding implementations of the `OutputHandler` interface.
 
-You may use Maven (3.0.4 or higher) to build this project. See e.g. http://maven.apache.org/run-maven/index.html
+You may use Maven (3.0.4 or higher) to build this project. See e.g. [here](http://maven.apache.org/run-maven/index.html).
 
 Having installed and set up Maven you would do as follows:
 
